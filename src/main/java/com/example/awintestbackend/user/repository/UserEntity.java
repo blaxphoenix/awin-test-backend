@@ -20,13 +20,17 @@ public class UserEntity {
     @Column(nullable = false, unique = true)
     private String email;
 
+    @Column(nullable = false)
+    private String currency;
+
     public UserEntity() {
     }
 
-    public UserEntity(Long userid, String name, String email) {
+    public UserEntity(Long userid, String name, String email, String currency) {
         this.userid = userid;
         this.name = name;
         this.email = email;
+        this.currency = currency;
     }
 
 }

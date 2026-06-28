@@ -34,6 +34,10 @@ A test backend service for a mock Awin frontend.
 - [ ] login?
 - [x] user info
     - [x] delete it from all other tables too (foreign key)
+    - [x] currency?
 - [x] todo list
-- [ ] performance (revenue, transactions, clicks, etc.)
+- [ ] performance
+    - [x] transactions
+    - [x] revenue 
+    - [ ] clicks
 - [ ] reports/metrics?

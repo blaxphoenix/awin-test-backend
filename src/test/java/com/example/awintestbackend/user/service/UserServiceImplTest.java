@@ -38,8 +38,8 @@ class UserServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        serviceDto = new UserServiceDto(1L, "John Doe", "john.doe@example.com");
-        repoDto = new UserRepositoryDto(1L, "John Doe", "john.doe@example.com");
+        serviceDto = new UserServiceDto(1L, "John Doe", "john.doe@example.com", "EUR");
+        repoDto = new UserRepositoryDto(1L, "John Doe", "john.doe@example.com", "EUR");
     }
 
     @Test
@@ -52,6 +52,7 @@ class UserServiceImplTest {
         assertEquals(serviceDto.userid(), result.userid());
         assertEquals(serviceDto.name(), result.name());
         assertEquals(serviceDto.email(), result.email());
+        assertEquals(serviceDto.currency(), result.currency());
         verify(userAdapter, times(1)).save(any(UserRepositoryDto.class));
     }
 
@@ -65,6 +66,7 @@ class UserServiceImplTest {
         assertEquals(serviceDto.userid(), result.get().userid());
         assertEquals(serviceDto.name(), result.get().name());
         assertEquals(serviceDto.email(), result.get().email());
+        assertEquals(serviceDto.currency(), result.get().currency());
         verify(userAdapter, times(1)).findById(1L);
     }
 
@@ -100,6 +102,7 @@ class UserServiceImplTest {
         assertEquals(serviceDto.userid(), result.userid());
         assertEquals(serviceDto.name(), result.name());
         assertEquals(serviceDto.email(), result.email());
+        assertEquals(serviceDto.currency(), result.currency());
         verify(userAdapter, times(1)).save(any(UserRepositoryDto.class));
     }
 

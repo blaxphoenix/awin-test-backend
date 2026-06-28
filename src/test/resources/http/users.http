@@ -5,7 +5,8 @@ X-Correlation-ID: {{correlationId}}
 
 {
   "name": "John Doe",
-  "email": "john.doe@example.com"
+  "email": "john.doe@example.com",
+  "currency": "EUR"
 }
 
 > {% client.global.set("userId", response.body.userid); %}
@@ -25,7 +26,8 @@ X-Correlation-ID: {{correlationId}}
 
 {
   "name": "John Smith",
-  "email": "john.smith@example.com"
+  "email": "john.smith@example.com",
+  "currency": "GBP"
 }
 
 ### Delete user

@@ -36,10 +36,10 @@ public class UserAdapter {
     }
 
     private UserEntity toEntity(UserRepositoryDto dto) {
-        return new UserEntity(dto.userid(), dto.name(), dto.email());
+        return new UserEntity(dto.userid(), dto.name(), dto.email(), dto.currency());
     }
 
     private UserRepositoryDto toDto(UserEntity entity) {
-        return new UserRepositoryDto(entity.getUserid(), entity.getName(), entity.getEmail());
+        return new UserRepositoryDto(entity.getUserid(), entity.getName(), entity.getEmail(), entity.getCurrency());
     }
 }

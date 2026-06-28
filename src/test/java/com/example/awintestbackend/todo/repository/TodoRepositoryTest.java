@@ -23,7 +23,7 @@ class TodoRepositoryTest {
     private TodoRepository todoRepository;
 
     private UserEntity createTestUser() {
-        UserEntity user = new UserEntity(null, "John Doe", "john@example.com");
+        UserEntity user = new UserEntity(null, "John Doe", "john@example.com", "USD");
         return entityManager.persistAndFlush(user);
     }
 
@@ -43,7 +43,7 @@ class TodoRepositoryTest {
     @Test
     void findByUserid_ShouldReturnTodos() {
         UserEntity user1 = createTestUser();
-        UserEntity user2 = new UserEntity(null, "Jane Doe", "jane@example.com");
+        UserEntity user2 = new UserEntity(null, "Jane Doe", "jane@example.com", "EUR");
         entityManager.persistAndFlush(user2);
 
         entityManager.persist(new TodoEntity(null, user1.getUserid(), "Task 1", "icon1", false));
@@ -85,7 +85,7 @@ class TodoRepositoryTest {
     @Test
     void deleteByUserid_ShouldRemoveAllUserTodos() {
         UserEntity user1 = createTestUser();
-        UserEntity user2 = new UserEntity(null, "Jane Doe", "jane@example.com");
+        UserEntity user2 = new UserEntity(null, "Jane Doe", "jane@example.com", "EUR");
         entityManager.persistAndFlush(user2);
 
         entityManager.persist(new TodoEntity(null, user1.getUserid(), "Task 1", "icon1", false));

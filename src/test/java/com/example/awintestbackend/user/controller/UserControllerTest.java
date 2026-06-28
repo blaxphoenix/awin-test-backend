@@ -36,8 +36,8 @@ class UserControllerTest {
 
     @Test
     void createUser_ShouldReturnCreatedUser() throws Exception {
-        UserControllerDto inputDto = new UserControllerDto(null, "John Doe", "john.doe@example.com");
-        UserServiceDto createdServiceDto = new UserServiceDto(1L, "John Doe", "john.doe@example.com");
+        UserControllerDto inputDto = new UserControllerDto(null, "John Doe", "john.doe@example.com", "EUR");
+        UserServiceDto createdServiceDto = new UserServiceDto(1L, "John Doe", "john.doe@example.com", "EUR");
 
         when(userService.createUser(any(UserServiceDto.class))).thenReturn(createdServiceDto);
 
@@ -47,14 +47,15 @@ class UserControllerTest {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.userid").value(1L))
                 .andExpect(jsonPath("$.name").value("John Doe"))
-                .andExpect(jsonPath("$.email").value("john.doe@example.com"));
+                .andExpect(jsonPath("$.email").value("john.doe@example.com"))
+                .andExpect(jsonPath("$.currency").value("EUR"));
 
         verify(userService, times(1)).createUser(any(UserServiceDto.class));
     }
 
     @Test
     void createUser_WithInvalidInput_ShouldReturnBadRequest() throws Exception {
-        UserControllerDto invalidDto = new UserControllerDto(null, "", "invalid-email");
+        UserControllerDto invalidDto = new UserControllerDto(null, "", "invalid-email", "US");
 
         mockMvc.perform(post("/u2m/v1/users")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -64,7 +65,7 @@ class UserControllerTest {
 
     @Test
     void getUserById_WhenUserExists_ShouldReturnUser() throws Exception {
-        UserServiceDto userDto = new UserServiceDto(1L, "John Doe", "john.doe@example.com");
+        UserServiceDto userDto = new UserServiceDto(1L, "John Doe", "john.doe@example.com", "EUR");
 
         when(userService.getUserById(1L)).thenReturn(Optional.of(userDto));
 
@@ -72,7 +73,8 @@ class UserControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.userid").value(1L))
                 .andExpect(jsonPath("$.name").value("John Doe"))
-                .andExpect(jsonPath("$.email").value("john.doe@example.com"));
+                .andExpect(jsonPath("$.email").value("john.doe@example.com"))
+                .andExpect(jsonPath("$.currency").value("EUR"));
     }
 
     @Test
@@ -85,20 +87,21 @@ class UserControllerTest {
 
     @Test
     void getAllUsers_ShouldReturnListOfUsers() throws Exception {
-        UserServiceDto userDto = new UserServiceDto(1L, "John Doe", "john.doe@example.com");
+        UserServiceDto userDto = new UserServiceDto(1L, "John Doe", "john.doe@example.com", "EUR");
         when(userService.getAllUsers()).thenReturn(List.of(userDto));
 
         mockMvc.perform(get("/u2m/v1/users"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].userid").value(1L))
                 .andExpect(jsonPath("$[0].name").value("John Doe"))
-                .andExpect(jsonPath("$[0].email").value("john.doe@example.com"));
+                .andExpect(jsonPath("$[0].email").value("john.doe@example.com"))
+                .andExpect(jsonPath("$[0].currency").value("EUR"));
     }
 
     @Test
     void updateUser_ShouldReturnUpdatedUser() throws Exception {
-        UserControllerDto inputDto = new UserControllerDto(1L, "John Updated", "john.updated@example.com");
-        UserServiceDto updatedServiceDto = new UserServiceDto(1L, "John Updated", "john.updated@example.com");
+        UserControllerDto inputDto = new UserControllerDto(1L, "John Updated", "john.updated@example.com", "USD");
+        UserServiceDto updatedServiceDto = new UserServiceDto(1L, "John Updated", "john.updated@example.com", "USD");
 
         when(userService.updateUser(eq(1L), any(UserServiceDto.class))).thenReturn(updatedServiceDto);
 
@@ -108,7 +111,8 @@ class UserControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.userid").value(1L))
                 .andExpect(jsonPath("$.name").value("John Updated"))
-                .andExpect(jsonPath("$.email").value("john.updated@example.com"));
+                .andExpect(jsonPath("$.email").value("john.updated@example.com"))
+                .andExpect(jsonPath("$.currency").value("USD"));
     }
 
     @Test

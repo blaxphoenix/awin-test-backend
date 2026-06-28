@@ -23,7 +23,7 @@ class UserRepositoryTest {
 
     @Test
     void save_ShouldPersistUser() {
-        UserEntity user = new UserEntity(null, "Jane Doe", "jane.doe@example.com");
+        UserEntity user = new UserEntity(null, "Jane Doe", "jane.doe@example.com", "USD");
         UserEntity savedUser = userRepository.save(user);
 
         assertNotNull(savedUser.getUserid());
@@ -31,11 +31,12 @@ class UserRepositoryTest {
         assertNotNull(foundUser);
         assertEquals(user.getName(), foundUser.getName());
         assertEquals(user.getEmail(), foundUser.getEmail());
+        assertEquals(user.getCurrency(), foundUser.getCurrency());
     }
 
     @Test
     void findById_ShouldReturnUser() {
-        UserEntity user = new UserEntity(null, "John Doe", "john.doe@example.com");
+        UserEntity user = new UserEntity(null, "John Doe", "john.doe@example.com", "EUR");
         UserEntity persistedUser = entityManager.persistAndFlush(user);
 
         Optional<UserEntity> found = userRepository.findById(persistedUser.getUserid());
@@ -46,8 +47,8 @@ class UserRepositoryTest {
 
     @Test
     void findAll_ShouldReturnAllUsers() {
-        entityManager.persist(new UserEntity(null, "User 1", "user1@example.com"));
-        entityManager.persist(new UserEntity(null, "User 2", "user2@example.com"));
+        entityManager.persist(new UserEntity(null, "User 1", "user1@example.com", "GBP"));
+        entityManager.persist(new UserEntity(null, "User 2", "user2@example.com", "USD"));
         entityManager.flush();
 
         List<UserEntity> users = userRepository.findAll();
@@ -57,7 +58,7 @@ class UserRepositoryTest {
 
     @Test
     void deleteById_ShouldRemoveUser() {
-        UserEntity user = new UserEntity(null, "Delete Me", "delete.me@example.com");
+        UserEntity user = new UserEntity(null, "Delete Me", "delete.me@example.com", "EUR");
         UserEntity persistedUser = entityManager.persistAndFlush(user);
 
         userRepository.deleteById(persistedUser.getUserid());

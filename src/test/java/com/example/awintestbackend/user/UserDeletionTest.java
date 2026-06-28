@@ -36,7 +36,7 @@ class UserDeletionTest {
     @Transactional
     void deleteUser_WithTodosAndTransactions_ShouldSucceed() {
         // Create user
-        UserEntity user = new UserEntity(null, "Test User", "test@example.com");
+        UserEntity user = new UserEntity(null, "Test User", "test@example.com", "EUR");
         UserEntity savedUser = userRepository.saveAndFlush(user);
 
         // Create to-do for user

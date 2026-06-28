@@ -56,10 +56,10 @@ public class UserController {
     }
 
     private UserServiceDto toServiceDto(UserControllerDto dto) {
-        return new UserServiceDto(dto.userid(), dto.name(), dto.email());
+        return new UserServiceDto(dto.userid(), dto.name(), dto.email(), dto.currency());
     }
 
     private UserControllerDto toControllerDto(UserServiceDto dto) {
-        return new UserControllerDto(dto.userid(), dto.name(), dto.email());
+        return new UserControllerDto(dto.userid(), dto.name(), dto.email(), dto.currency());
     }
 }

@@ -1,6 +1,8 @@
 package com.example.awintestbackend.transaction.repository;
 
 import org.springframework.stereotype.Component;
+
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -32,6 +34,12 @@ public class TransactionAdapter {
 
     public List<TransactionRepositoryDto> findByUserid(Long userid) {
         return transactionRepository.findByUserid(userid).stream()
+                .map(this::toDto)
+                .collect(Collectors.toList());
+    }
+
+    public List<TransactionRepositoryDto> findByUseridAndDateGreaterThanEqual(Long userid, LocalDate date) {
+        return transactionRepository.findByUseridAndDateGreaterThanEqual(userid, date).stream()
                 .map(this::toDto)
                 .collect(Collectors.toList());
     }

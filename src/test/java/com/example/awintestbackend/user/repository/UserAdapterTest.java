@@ -28,8 +28,8 @@ class UserAdapterTest {
 
     @BeforeEach
     void setUp() {
-        repoDto = new UserRepositoryDto(1L, "John Doe", "john.doe@example.com");
-        userEntity = new UserEntity(1L, "John Doe", "john.doe@example.com");
+        repoDto = new UserRepositoryDto(1L, "John Doe", "john.doe@example.com", "EUR");
+        userEntity = new UserEntity(1L, "John Doe", "john.doe@example.com", "EUR");
     }
 
     @Test
@@ -42,6 +42,7 @@ class UserAdapterTest {
         assertEquals(repoDto.userid(), result.userid());
         assertEquals(repoDto.name(), result.name());
         assertEquals(repoDto.email(), result.email());
+        assertEquals(repoDto.currency(), result.currency());
         verify(userRepository, times(1)).save(any(UserEntity.class));
     }
 
@@ -55,6 +56,7 @@ class UserAdapterTest {
         assertEquals(repoDto.userid(), result.get().userid());
         assertEquals(repoDto.name(), result.get().name());
         assertEquals(repoDto.email(), result.get().email());
+        assertEquals(repoDto.currency(), result.get().currency());
         verify(userRepository, times(1)).findById(1L);
     }
 

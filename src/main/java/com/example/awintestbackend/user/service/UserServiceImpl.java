@@ -51,7 +51,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserServiceDto updateUser(Long id, UserServiceDto user) {
         log.info("Updating user with id: {}", id);
-        UserRepositoryDto repoDto = new UserRepositoryDto(id, user.name(), user.email());
+        UserRepositoryDto repoDto = new UserRepositoryDto(id, user.name(), user.email(), user.currency());
         UserRepositoryDto updatedRepoDto = userAdapter.save(repoDto);
         return toServiceDto(updatedRepoDto);
     }
@@ -66,10 +66,10 @@ public class UserServiceImpl implements UserService {
     }
 
     private UserRepositoryDto toRepoDto(UserServiceDto dto) {
-        return new UserRepositoryDto(dto.userid(), dto.name(), dto.email());
+        return new UserRepositoryDto(dto.userid(), dto.name(), dto.email(), dto.currency());
     }
 
     private UserServiceDto toServiceDto(UserRepositoryDto dto) {
-        return new UserServiceDto(dto.userid(), dto.name(), dto.email());
+        return new UserServiceDto(dto.userid(), dto.name(), dto.email(), dto.currency());
     }
 }
