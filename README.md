@@ -1,5 +1,7 @@
 # awin-test-backend
 
+A test backend service for a mock Awin frontend.
+
 ## TODO – general
 
 - [x] git repository
@@ -20,7 +22,7 @@
 - [x] MDC for logging + logback configs
 - [ ] swagger + UI?
 - [x] dto validations
-- [ ] unit/integration tests
+- [x] unit/integration tests
     - [ ] test containers?
 - [ ] caching?
 - [ ] virtual threads?
@@ -28,7 +30,7 @@
 ## TODO – features
 
 - [x] overall api design (e.g., u2m/v1)
-    - [ ] spring boot 4 api versioning? 
+    - [x] spring boot 4 api versioning? 
 - [ ] login?
 - [x] user info
     - [x] delete it from all other tables too (foreign key)

@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/u2m/v1/users")
+@RequestMapping(path = "/u2m/v{version}/users", version = "1")
 public class UserController {
 
     private final UserService userService;

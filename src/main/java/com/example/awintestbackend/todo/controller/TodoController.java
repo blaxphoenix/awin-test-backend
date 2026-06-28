@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/u2m/v1/todos")
+@RequestMapping(path = "/u2m/v{version}/todos", version = "1")
 public class TodoController {
 
     private final TodoService todoService;

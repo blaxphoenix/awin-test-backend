@@ -3,38 +3,38 @@ POST {{host}}/u2m/v1/todos
 Content-Type: application/json
 
 {
-  "userid": {{user_id}},
+  "userid": {{userId}},
   "description": "Finish the test task",
   "icon": "task-icon",
   "state": false
 }
 
 > {%
- client.global.set("todo_id", response.body.id);
+ client.global.set("todoId", response.body.id);
  %}
 
 ### Get all todos
 GET {{host}}/u2m/v1/todos
 
 ### Get todos for user
-GET {{host}}/u2m/v1/todos?userid={{user_id}}
+GET {{host}}/u2m/v1/todos?userid={{userId}}
 
 ### Get todo by id
-GET {{host}}/u2m/v1/todos/{{todo_id}}
+GET {{host}}/u2m/v1/todos/{{todoId}}
 
 ### Update todo
-PUT {{host}}/u2m/v1/todos/{{todo_id}}
+PUT {{host}}/u2m/v1/todos/{{todoId}}
 Content-Type: application/json
 
 {
-  "userid": {{user_id}},
+  "userid": {{userId}},
   "description": "Finish the test task - Updated",
   "icon": "task-icon-updated",
   "state": true
 }
 
 ### Toggle todo state
-PATCH {{host}}/u2m/v1/todos/{{todo_id}}/toggle
+PATCH {{host}}/u2m/v1/todos/{{todoId}}/toggle
 
 ### Delete todo
-DELETE {{host}}/u2m/v1/todos/{{todo_id}}
+DELETE {{host}}/u2m/v1/todos/{{todoId}}
