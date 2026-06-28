@@ -1,6 +1,7 @@
 package com.example.awintestbackend.user.service;
 
 import com.example.awintestbackend.todo.service.TodoService;
+import com.example.awintestbackend.transaction.service.TransactionService;
 import com.example.awintestbackend.user.repository.UserAdapter;
 import com.example.awintestbackend.user.repository.UserRepositoryDto;
 import lombok.extern.slf4j.Slf4j;
@@ -17,10 +18,12 @@ public class UserServiceImpl implements UserService {
 
     private final UserAdapter userAdapter;
     private final TodoService todoService;
+    private final TransactionService transactionService;
 
-    public UserServiceImpl(UserAdapter userAdapter, TodoService todoService) {
+    public UserServiceImpl(UserAdapter userAdapter, TodoService todoService, TransactionService transactionService) {
         this.userAdapter = userAdapter;
         this.todoService = todoService;
+        this.transactionService = transactionService;
     }
 
     @Override
@@ -58,6 +61,7 @@ public class UserServiceImpl implements UserService {
     public void deleteUser(Long id) {
         log.info("Deleting user with id: {}", id);
         todoService.deleteTodosByUserid(id);
+        transactionService.deleteTransactionsByUserid(id);
         userAdapter.deleteById(id);
     }
 

@@ -1,6 +1,7 @@
 package com.example.awintestbackend.user.service;
 
 import com.example.awintestbackend.todo.service.TodoService;
+import com.example.awintestbackend.transaction.service.TransactionService;
 import com.example.awintestbackend.user.repository.UserAdapter;
 import com.example.awintestbackend.user.repository.UserRepositoryDto;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,6 +26,9 @@ class UserServiceImplTest {
 
     @Mock
     private TodoService todoService;
+
+    @Mock
+    private TransactionService transactionService;
 
     @InjectMocks
     private UserServiceImpl userService;
@@ -100,13 +104,15 @@ class UserServiceImplTest {
     }
 
     @Test
-    void deleteUser_ShouldCallTodoServiceAndDeleteAdapter() {
+    void deleteUser_ShouldCallTodoServiceTransactionServiceAndDeleteAdapter() {
         doNothing().when(todoService).deleteTodosByUserid(1L);
+        doNothing().when(transactionService).deleteTransactionsByUserid(1L);
         doNothing().when(userAdapter).deleteById(1L);
 
         userService.deleteUser(1L);
 
         verify(todoService, times(1)).deleteTodosByUserid(1L);
+        verify(transactionService, times(1)).deleteTransactionsByUserid(1L);
         verify(userAdapter, times(1)).deleteById(1L);
     }
 }

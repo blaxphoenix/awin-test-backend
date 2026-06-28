@@ -1,0 +1,70 @@
+package com.example.awintestbackend.transaction.controller;
+
+import com.example.awintestbackend.transaction.service.TransactionService;
+import com.example.awintestbackend.transaction.service.TransactionServiceDto;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import java.util.List;
+import java.util.stream.Collectors;
+
+@RestController
+@RequestMapping(path = "/u2m/v{version}/transactions", version = "1")
+public class TransactionController {
+
+    private final TransactionService transactionService;
+
+    public TransactionController(TransactionService transactionService) {
+        this.transactionService = transactionService;
+    }
+
+    @PostMapping
+    public ResponseEntity<TransactionControllerDto> createTransaction(@Valid @RequestBody TransactionControllerDto transactionDto) {
+        TransactionServiceDto serviceDto = toServiceDto(transactionDto);
+        TransactionServiceDto createdTransaction = transactionService.createTransaction(serviceDto);
+        return new ResponseEntity<>(toControllerDto(createdTransaction), HttpStatus.CREATED);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<TransactionControllerDto> getTransactionById(@PathVariable Long id) {
+        return transactionService.getTransactionById(id)
+                .map(this::toControllerDto)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping
+    public List<TransactionControllerDto> getAllTransactions(@RequestParam(required = false) Long userid) {
+        List<TransactionServiceDto> transactions;
+        if (userid != null) {
+            transactions = transactionService.getTransactionsByUserid(userid);
+        } else {
+            transactions = transactionService.getAllTransactions();
+        }
+        return transactions.stream()
+                .map(this::toControllerDto)
+                .collect(Collectors.toList());
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<TransactionControllerDto> updateTransaction(@PathVariable Long id, @Valid @RequestBody TransactionControllerDto transactionDto) {
+        TransactionServiceDto serviceDto = toServiceDto(transactionDto);
+        TransactionServiceDto updatedTransaction = transactionService.updateTransaction(id, serviceDto);
+        return ResponseEntity.ok(toControllerDto(updatedTransaction));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteTransaction(@PathVariable Long id) {
+        transactionService.deleteTransaction(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    private TransactionServiceDto toServiceDto(TransactionControllerDto dto) {
+        return new TransactionServiceDto(dto.id(), dto.userid(), dto.value(), dto.details(), dto.date());
+    }
+
+    private TransactionControllerDto toControllerDto(TransactionServiceDto dto) {
+        return new TransactionControllerDto(dto.id(), dto.userid(), dto.value(), dto.details(), dto.date());
+    }
+}

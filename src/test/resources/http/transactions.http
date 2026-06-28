@@ -1,0 +1,37 @@
+### Create a new transaction
+POST {{host}}/u2m/v1/transactions
+Content-Type: application/json
+
+{
+  "userid": {{userId}},
+  "value": 150.75,
+  "details": "Online Shopping",
+  "date": "2026-06-28"
+}
+
+> {%
+ client.global.set("transactionId", response.body.id);
+ %}
+
+### Get all transactions
+GET {{host}}/u2m/v1/transactions
+
+### Get transactions for user
+GET {{host}}/u2m/v1/transactions?userid={{userId}}
+
+### Get transaction by id
+GET {{host}}/u2m/v1/transactions/{{transactionId}}
+
+### Update transaction
+PUT {{host}}/u2m/v1/transactions/{{transactionId}}
+Content-Type: application/json
+
+{
+  "userid": {{userId}},
+  "value": 200.00,
+  "details": "Online Shopping - Updated",
+  "date": "2026-06-29"
+}
+
+### Delete transaction
+DELETE {{host}}/u2m/v1/transactions/{{transactionId}}
