@@ -33,12 +33,12 @@ class UserServiceImplTest {
     @InjectMocks
     private UserServiceImpl userService;
 
-    private UserServiceDto serviceDto;
+    private UserData serviceDto;
     private UserRepositoryDto repoDto;
 
     @BeforeEach
     void setUp() {
-        serviceDto = new UserServiceDto(1L, "John Doe", "john.doe@example.com", "EUR");
+        serviceDto = new UserData(1L, "John Doe", "john.doe@example.com", "EUR");
         repoDto = new UserRepositoryDto(1L, "John Doe", "john.doe@example.com", "EUR");
     }
 
@@ -46,7 +46,7 @@ class UserServiceImplTest {
     void createUser_ShouldReturnCreatedUser() {
         when(userAdapter.save(any(UserRepositoryDto.class))).thenReturn(repoDto);
 
-        UserServiceDto result = userService.createUser(serviceDto);
+        UserData result = userService.createUser(serviceDto);
 
         assertNotNull(result);
         assertEquals(serviceDto.userid(), result.userid());
@@ -60,7 +60,7 @@ class UserServiceImplTest {
     void getUserById_WhenUserExists_ShouldReturnUser() {
         when(userAdapter.findById(1L)).thenReturn(Optional.of(repoDto));
 
-        Optional<UserServiceDto> result = userService.getUserById(1L);
+        Optional<UserData> result = userService.getUserById(1L);
 
         assertTrue(result.isPresent());
         assertEquals(serviceDto.userid(), result.get().userid());
@@ -74,7 +74,7 @@ class UserServiceImplTest {
     void getUserById_WhenUserDoesNotExist_ShouldReturnEmpty() {
         when(userAdapter.findById(1L)).thenReturn(Optional.empty());
 
-        Optional<UserServiceDto> result = userService.getUserById(1L);
+        Optional<UserData> result = userService.getUserById(1L);
 
         assertFalse(result.isPresent());
         verify(userAdapter, times(1)).findById(1L);
@@ -84,7 +84,7 @@ class UserServiceImplTest {
     void getAllUsers_ShouldReturnListOfUsers() {
         when(userAdapter.findAll()).thenReturn(List.of(repoDto));
 
-        List<UserServiceDto> result = userService.getAllUsers();
+        List<UserData> result = userService.getAllUsers();
 
         assertNotNull(result);
         assertEquals(1, result.size());
@@ -96,7 +96,7 @@ class UserServiceImplTest {
     void updateUser_ShouldReturnUpdatedUser() {
         when(userAdapter.save(any(UserRepositoryDto.class))).thenReturn(repoDto);
 
-        UserServiceDto result = userService.updateUser(1L, serviceDto);
+        UserData result = userService.updateUser(1L, serviceDto);
 
         assertNotNull(result);
         assertEquals(serviceDto.userid(), result.userid());

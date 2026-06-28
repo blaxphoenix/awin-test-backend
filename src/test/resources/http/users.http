@@ -1,5 +1,6 @@
 ### Create a new user
 POST http://{{host}}/u2m/v1/users
+Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 X-Correlation-ID: {{correlationId}}
 
@@ -9,18 +10,23 @@ X-Correlation-ID: {{correlationId}}
   "currency": "EUR"
 }
 
-> {% client.global.set("userId", response.body.userid); %}
+> {%
+    client.global.set("userId", response.body.userid);
+%}
 
 ### Get all users
 GET http://{{host}}/u2m/v1/users
+Authorization: Basic {{username}} {{password}}
 X-Correlation-ID: {{correlationId}}
 
 ### Get user by ID
 GET http://{{host}}/u2m/v1/users/{{userId}}
+Authorization: Basic {{username}} {{password}}
 X-Correlation-ID: {{correlationId}}
 
 ### Update user
 PUT http://{{host}}/u2m/v1/users/{{userId}}
+Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 X-Correlation-ID: {{correlationId}}
 
@@ -32,4 +38,5 @@ X-Correlation-ID: {{correlationId}}
 
 ### Delete user
 DELETE http://{{host}}/u2m/v1/users/{{userId}}
+Authorization: Basic {{username}} {{password}}
 X-Correlation-ID: {{correlationId}}

@@ -1,11 +1,14 @@
 ### Get total revenue for user 1 for the past 30 days (default)
-GET {{host}}/u2m/v1/revenue?userId={{userId}}
+GET http://{{host}}/u2m/v1/revenue?userId={{userId}}
+Authorization: Basic {{username}} {{password}}
 X-Correlation-ID: {{correlationId}}
 
 ### Get total revenue for user 1 for the past 7 days
-GET {{host}}/u2m/v1/revenue?userId={{userId}}&days=7
+GET http://{{host}}/u2m/v1/revenue?userId={{userId}}&days=7
+Authorization: Basic {{username}} {{password}}
 X-Correlation-ID: {{correlationId}}
 
 ### Get total revenue for user 2 for the past 1 day
-GET {{host}}/u2m/v1/revenue?userId={{userId}}&days=1
+GET http://{{host}}/u2m/v1/revenue?userId={{userId}}&days=1
+Authorization: Basic {{username}} {{password}}
 X-Correlation-ID: {{correlationId}}

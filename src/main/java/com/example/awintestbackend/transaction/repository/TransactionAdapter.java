@@ -2,10 +2,9 @@ package com.example.awintestbackend.transaction.repository;
 
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Component
 public class TransactionAdapter {
@@ -29,19 +28,19 @@ public class TransactionAdapter {
     public List<TransactionRepositoryDto> findAll() {
         return transactionRepository.findAll().stream()
                 .map(this::toDto)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public List<TransactionRepositoryDto> findByUserid(Long userid) {
         return transactionRepository.findByUserid(userid).stream()
                 .map(this::toDto)
-                .collect(Collectors.toList());
+                .toList();
     }
 
-    public List<TransactionRepositoryDto> findByUseridAndDateGreaterThanEqual(Long userid, LocalDate date) {
+    public List<TransactionRepositoryDto> findByUseridAndDateGreaterThanEqual(Long userid, OffsetDateTime date) {
         return transactionRepository.findByUseridAndDateGreaterThanEqual(userid, date).stream()
                 .map(this::toDto)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public void deleteById(Long id) {

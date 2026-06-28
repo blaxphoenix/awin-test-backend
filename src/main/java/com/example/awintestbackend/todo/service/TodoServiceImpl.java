@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -20,7 +19,7 @@ public class TodoServiceImpl implements TodoService {
     }
 
     @Override
-    public TodoServiceDto createTodo(TodoServiceDto todo) {
+    public TodoData createTodo(TodoData todo) {
         log.info("Creating todo for user: {}", todo.userid());
         TodoRepositoryDto repoDto = toRepoDto(todo);
         TodoRepositoryDto savedRepoDto = todoAdapter.save(repoDto);
@@ -28,29 +27,29 @@ public class TodoServiceImpl implements TodoService {
     }
 
     @Override
-    public Optional<TodoServiceDto> getTodoById(Long id) {
+    public Optional<TodoData> getTodoById(Long id) {
         log.info("Fetching todo with id: {}", id);
         return todoAdapter.findById(id).map(this::toServiceDto);
     }
 
     @Override
-    public List<TodoServiceDto> getAllTodos() {
+    public List<TodoData> getAllTodos() {
         log.info("Fetching all todos");
         return todoAdapter.findAll().stream()
                 .map(this::toServiceDto)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
-    public List<TodoServiceDto> getTodosByUserid(Long userid) {
+    public List<TodoData> getTodosByUserid(Long userid) {
         log.info("Fetching todos for user: {}", userid);
         return todoAdapter.findByUserid(userid).stream()
                 .map(this::toServiceDto)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
-    public TodoServiceDto updateTodo(Long id, TodoServiceDto todo) {
+    public TodoData updateTodo(Long id, TodoData todo) {
         log.info("Updating todo with id: {}", id);
         TodoRepositoryDto repoDto = new TodoRepositoryDto(id, todo.userid(), todo.description(), todo.icon(), todo.state());
         TodoRepositoryDto updatedRepoDto = todoAdapter.save(repoDto);
@@ -70,7 +69,7 @@ public class TodoServiceImpl implements TodoService {
     }
 
     @Override
-    public Optional<TodoServiceDto> toggleTodoState(Long id) {
+    public Optional<TodoData> toggleTodoState(Long id) {
         log.info("Toggling state for todo with id: {}", id);
         return todoAdapter.findById(id).map(todo -> {
             TodoRepositoryDto updatedDto = new TodoRepositoryDto(
@@ -84,11 +83,11 @@ public class TodoServiceImpl implements TodoService {
         });
     }
 
-    private TodoRepositoryDto toRepoDto(TodoServiceDto dto) {
+    private TodoRepositoryDto toRepoDto(TodoData dto) {
         return new TodoRepositoryDto(dto.id(), dto.userid(), dto.description(), dto.icon(), dto.state());
     }
 
-    private TodoServiceDto toServiceDto(TodoRepositoryDto dto) {
-        return new TodoServiceDto(dto.id(), dto.userid(), dto.description(), dto.icon(), dto.state());
+    private TodoData toServiceDto(TodoRepositoryDto dto) {
+        return new TodoData(dto.id(), dto.userid(), dto.description(), dto.icon(), dto.state());
     }
 }

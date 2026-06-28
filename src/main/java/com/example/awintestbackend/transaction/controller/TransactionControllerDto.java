@@ -2,7 +2,9 @@ package com.example.awintestbackend.transaction.controller;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import java.time.LocalDate;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.time.OffsetDateTime;
 
 public record TransactionControllerDto(
         Long id,
@@ -13,6 +15,7 @@ public record TransactionControllerDto(
         @NotBlank(message = "Details are mandatory")
         String details,
         @NotNull(message = "Date is mandatory")
-        LocalDate date
+        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+        OffsetDateTime date
 ) {
 }

@@ -1,15 +1,14 @@
 package com.example.awintestbackend.todo.controller;
 
 import com.example.awintestbackend.exception.ResourceNotFoundException;
+import com.example.awintestbackend.todo.service.TodoData;
 import com.example.awintestbackend.todo.service.TodoService;
-import com.example.awintestbackend.todo.service.TodoServiceDto;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(path = "/u2m/v{version}/todos", version = "1")
@@ -23,8 +22,8 @@ public class TodoController {
 
     @PostMapping
     public ResponseEntity<TodoControllerDto> createTodo(@Valid @RequestBody TodoControllerDto todoDto) {
-        TodoServiceDto serviceDto = toServiceDto(todoDto);
-        TodoServiceDto createdTodo = todoService.createTodo(serviceDto);
+        TodoData serviceDto = toServiceDto(todoDto);
+        TodoData createdTodo = todoService.createTodo(serviceDto);
         return new ResponseEntity<>(toControllerDto(createdTodo), HttpStatus.CREATED);
     }
 
@@ -38,7 +37,7 @@ public class TodoController {
 
     @GetMapping
     public ResponseEntity<List<TodoControllerDto>> getAllTodos(@RequestParam(required = false) Long userid) {
-        List<TodoServiceDto> todos;
+        List<TodoData> todos;
         if (userid != null) {
             todos = todoService.getTodosByUserid(userid);
         } else {
@@ -46,14 +45,14 @@ public class TodoController {
         }
         List<TodoControllerDto> result = todos.stream()
                 .map(this::toControllerDto)
-                .collect(Collectors.toList());
+                .toList();
         return ResponseEntity.ok(result);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<TodoControllerDto> updateTodo(@PathVariable Long id, @Valid @RequestBody TodoControllerDto todoDto) {
-        TodoServiceDto serviceDto = toServiceDto(todoDto);
-        TodoServiceDto updatedTodo = todoService.updateTodo(id, serviceDto);
+        TodoData serviceDto = toServiceDto(todoDto);
+        TodoData updatedTodo = todoService.updateTodo(id, serviceDto);
         return ResponseEntity.ok(toControllerDto(updatedTodo));
     }
 
@@ -71,11 +70,11 @@ public class TodoController {
         return ResponseEntity.ok(todo);
     }
 
-    private TodoServiceDto toServiceDto(TodoControllerDto dto) {
-        return new TodoServiceDto(dto.id(), dto.userid(), dto.description(), dto.icon(), dto.state());
+    private TodoData toServiceDto(TodoControllerDto dto) {
+        return new TodoData(dto.id(), dto.userid(), dto.description(), dto.icon(), dto.state());
     }
 
-    private TodoControllerDto toControllerDto(TodoServiceDto dto) {
+    private TodoControllerDto toControllerDto(TodoData dto) {
         return new TodoControllerDto(dto.id(), dto.userid(), dto.description(), dto.icon(), dto.state());
     }
 }

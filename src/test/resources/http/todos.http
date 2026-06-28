@@ -1,5 +1,6 @@
 ### Create a new todo
-POST {{host}}/u2m/v1/todos
+POST http://{{host}}/u2m/v1/todos
+Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 
 {
@@ -10,20 +11,24 @@ Content-Type: application/json
 }
 
 > {%
- client.global.set("todoId", response.body.id);
- %}
+    client.global.set("todoId", response.body.id);
+%}
 
 ### Get all todos
-GET {{host}}/u2m/v1/todos
+GET http://{{host}}/u2m/v1/todos
+Authorization: Basic {{username}} {{password}}
 
 ### Get todos for user
-GET {{host}}/u2m/v1/todos?userid={{userId}}
+GET http://{{host}}/u2m/v1/todos?userid={{userId}}
+Authorization: Basic {{username}} {{password}}
 
 ### Get todo by id
-GET {{host}}/u2m/v1/todos/{{todoId}}
+GET http://{{host}}/u2m/v1/todos/{{todoId}}
+Authorization: Basic {{username}} {{password}}
 
 ### Update todo
-PUT {{host}}/u2m/v1/todos/{{todoId}}
+PUT http://{{host}}/u2m/v1/todos/{{todoId}}
+Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 
 {
@@ -34,7 +39,9 @@ Content-Type: application/json
 }
 
 ### Toggle todo state
-PATCH {{host}}/u2m/v1/todos/{{todoId}}/toggle
+PATCH http://{{host}}/u2m/v1/todos/{{todoId}}/toggle
+Authorization: Basic {{username}} {{password}}
 
 ### Delete todo
-DELETE {{host}}/u2m/v1/todos/{{todoId}}
+DELETE http://{{host}}/u2m/v1/todos/{{todoId}}
+Authorization: Basic {{username}} {{password}}

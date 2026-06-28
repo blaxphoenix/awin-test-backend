@@ -4,7 +4,8 @@ import com.example.awintestbackend.transaction.repository.TransactionAdapter;
 import com.example.awintestbackend.transaction.repository.TransactionRepositoryDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import java.time.LocalDate;
+
+import java.time.OffsetDateTime;
 import java.util.List;
 
 @Slf4j
@@ -18,15 +19,15 @@ public class RevenueServiceImpl implements RevenueService {
     }
 
     @Override
-    public RevenueServiceDto getTotalRevenue(Long userId, int days) {
+    public RevenueData getTotalRevenue(Long userId, int days) {
         log.info("Calculating total revenue for user {} for the past {} days", userId, days);
-        LocalDate startDate = LocalDate.now().minusDays(days);
+        OffsetDateTime startDate = OffsetDateTime.now().minusDays(days);
         List<TransactionRepositoryDto> transactions = transactionAdapter.findByUseridAndDateGreaterThanEqual(userId, startDate);
-        
+
         double totalRevenue = transactions.stream()
                 .mapToDouble(TransactionRepositoryDto::value)
                 .sum();
-                
-        return new RevenueServiceDto(totalRevenue);
+
+        return new RevenueData(totalRevenue);
     }
 }

@@ -4,12 +4,19 @@ import java.util.List;
 import java.util.Optional;
 
 public interface TodoService {
-    TodoServiceDto createTodo(TodoServiceDto todo);
-    Optional<TodoServiceDto> getTodoById(Long id);
-    List<TodoServiceDto> getAllTodos();
-    List<TodoServiceDto> getTodosByUserid(Long userid);
-    TodoServiceDto updateTodo(Long id, TodoServiceDto todo);
+    TodoData createTodo(TodoData todo);
+
+    Optional<TodoData> getTodoById(Long id);
+
+    List<TodoData> getAllTodos();
+
+    List<TodoData> getTodosByUserid(Long userid);
+
+    TodoData updateTodo(Long id, TodoData todo);
+
     void deleteTodo(Long id);
+
     void deleteTodosByUserid(Long userid);
-    Optional<TodoServiceDto> toggleTodoState(Long id);
+
+    Optional<TodoData> toggleTodoState(Long id);
 }

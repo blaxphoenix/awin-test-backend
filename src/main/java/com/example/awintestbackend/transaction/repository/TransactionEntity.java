@@ -3,7 +3,8 @@ package com.example.awintestbackend.transaction.repository;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import java.time.LocalDate;
+
+import java.time.OffsetDateTime;
 
 @Setter
 @Getter
@@ -25,12 +26,12 @@ public class TransactionEntity {
     private String details;
 
     @Column(nullable = false)
-    private LocalDate date;
+    private OffsetDateTime date;
 
     public TransactionEntity() {
     }
 
-    public TransactionEntity(Long id, Long userid, Double value, String details, LocalDate date) {
+    public TransactionEntity(Long id, Long userid, Double value, String details, OffsetDateTime date) {
         this.id = id;
         this.userid = userid;
         this.value = value;

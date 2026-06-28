@@ -25,12 +25,12 @@ class TodoServiceImplTest {
     @InjectMocks
     private TodoServiceImpl todoService;
 
-    private TodoServiceDto serviceDto;
+    private TodoData serviceDto;
     private TodoRepositoryDto repoDto;
 
     @BeforeEach
     void setUp() {
-        serviceDto = new TodoServiceDto(1L, 100L, "Task 1", "icon-1", false);
+        serviceDto = new TodoData(1L, 100L, "Task 1", "icon-1", false);
         repoDto = new TodoRepositoryDto(1L, 100L, "Task 1", "icon-1", false);
     }
 
@@ -38,7 +38,7 @@ class TodoServiceImplTest {
     void createTodo_ShouldReturnCreatedTodo() {
         when(todoAdapter.save(any(TodoRepositoryDto.class))).thenReturn(repoDto);
 
-        TodoServiceDto result = todoService.createTodo(serviceDto);
+        TodoData result = todoService.createTodo(serviceDto);
 
         assertNotNull(result);
         assertEquals(serviceDto.id(), result.id());
@@ -53,7 +53,7 @@ class TodoServiceImplTest {
     void getTodoById_WhenTodoExists_ShouldReturnTodo() {
         when(todoAdapter.findById(1L)).thenReturn(Optional.of(repoDto));
 
-        Optional<TodoServiceDto> result = todoService.getTodoById(1L);
+        Optional<TodoData> result = todoService.getTodoById(1L);
 
         assertTrue(result.isPresent());
         assertEquals(serviceDto.id(), result.get().id());
@@ -64,7 +64,7 @@ class TodoServiceImplTest {
     void getTodosByUserid_ShouldReturnListOfTodos() {
         when(todoAdapter.findByUserid(100L)).thenReturn(List.of(repoDto));
 
-        List<TodoServiceDto> result = todoService.getTodosByUserid(100L);
+        List<TodoData> result = todoService.getTodosByUserid(100L);
 
         assertNotNull(result);
         assertEquals(1, result.size());
@@ -76,7 +76,7 @@ class TodoServiceImplTest {
     void updateTodo_ShouldReturnUpdatedTodo() {
         when(todoAdapter.save(any(TodoRepositoryDto.class))).thenReturn(repoDto);
 
-        TodoServiceDto result = todoService.updateTodo(1L, serviceDto);
+        TodoData result = todoService.updateTodo(1L, serviceDto);
 
         assertNotNull(result);
         assertEquals(serviceDto.id(), result.id());
@@ -100,7 +100,7 @@ class TodoServiceImplTest {
         when(todoAdapter.findById(1L)).thenReturn(Optional.of(initialRepoDto));
         when(todoAdapter.save(any(TodoRepositoryDto.class))).thenReturn(toggledRepoDto);
 
-        Optional<TodoServiceDto> result = todoService.toggleTodoState(1L);
+        Optional<TodoData> result = todoService.toggleTodoState(1L);
 
         assertTrue(result.isPresent());
         assertTrue(result.get().state());

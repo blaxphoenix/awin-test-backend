@@ -1,6 +1,6 @@
 package com.example.awintestbackend.user.service;
 
-public record UserServiceDto(
+public record UserData(
         Long userid,
         String name,
         String email,

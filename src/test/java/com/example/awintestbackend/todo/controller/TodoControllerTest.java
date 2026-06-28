@@ -2,13 +2,14 @@ package com.example.awintestbackend.todo.controller;
 
 import com.example.awintestbackend.config.SecurityConfig;
 import com.example.awintestbackend.exception.GlobalExceptionHandler;
+import com.example.awintestbackend.todo.service.TodoData;
 import com.example.awintestbackend.todo.service.TodoService;
-import com.example.awintestbackend.todo.service.TodoServiceDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import tools.jackson.databind.ObjectMapper;
@@ -20,10 +21,12 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(TodoController.class)
 @Import({SecurityConfig.class, GlobalExceptionHandler.class})
+@WithMockUser
 class TodoControllerTest {
 
     @Autowired
@@ -38,9 +41,9 @@ class TodoControllerTest {
     @Test
     void createTodo_ShouldReturnCreatedTodo() throws Exception {
         TodoControllerDto inputDto = new TodoControllerDto(null, 1L, "Test Todo", "icon", false);
-        TodoServiceDto createdServiceDto = new TodoServiceDto(1L, 1L, "Test Todo", "icon", false);
+        TodoData createdServiceDto = new TodoData(1L, 1L, "Test Todo", "icon", false);
 
-        when(todoService.createTodo(any(TodoServiceDto.class))).thenReturn(createdServiceDto);
+        when(todoService.createTodo(any(TodoData.class))).thenReturn(createdServiceDto);
 
         mockMvc.perform(post("/u2m/v1/todos")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -50,12 +53,12 @@ class TodoControllerTest {
                 .andExpect(jsonPath("$.description").value("Test Todo"))
                 .andExpect(jsonPath("$.userid").value(1L));
 
-        verify(todoService, times(1)).createTodo(any(TodoServiceDto.class));
+        verify(todoService, times(1)).createTodo(any(TodoData.class));
     }
 
     @Test
     void getTodoById_WhenExists_ShouldReturnTodo() throws Exception {
-        TodoServiceDto todoDto = new TodoServiceDto(1L, 1L, "Test Todo", "icon", false);
+        TodoData todoDto = new TodoData(1L, 1L, "Test Todo", "icon", false);
 
         when(todoService.getTodoById(1L)).thenReturn(Optional.of(todoDto));
 
@@ -67,7 +70,7 @@ class TodoControllerTest {
 
     @Test
     void getAllTodos_ShouldReturnList() throws Exception {
-        TodoServiceDto todoDto = new TodoServiceDto(1L, 1L, "Test Todo", "icon", false);
+        TodoData todoDto = new TodoData(1L, 1L, "Test Todo", "icon", false);
         when(todoService.getAllTodos()).thenReturn(List.of(todoDto));
 
         mockMvc.perform(get("/u2m/v1/todos"))
@@ -77,7 +80,7 @@ class TodoControllerTest {
 
     @Test
     void getTodosByUserid_ShouldReturnFilteredList() throws Exception {
-        TodoServiceDto todoDto = new TodoServiceDto(1L, 1L, "Test Todo", "icon", false);
+        TodoData todoDto = new TodoData(1L, 1L, "Test Todo", "icon", false);
         when(todoService.getTodosByUserid(1L)).thenReturn(List.of(todoDto));
 
         mockMvc.perform(get("/u2m/v1/todos?userid=1"))
@@ -89,9 +92,9 @@ class TodoControllerTest {
     @Test
     void updateTodo_ShouldReturnUpdatedTodo() throws Exception {
         TodoControllerDto inputDto = new TodoControllerDto(1L, 1L, "Updated Todo", "icon", true);
-        TodoServiceDto updatedServiceDto = new TodoServiceDto(1L, 1L, "Updated Todo", "icon", true);
+        TodoData updatedServiceDto = new TodoData(1L, 1L, "Updated Todo", "icon", true);
 
-        when(todoService.updateTodo(eq(1L), any(TodoServiceDto.class))).thenReturn(updatedServiceDto);
+        when(todoService.updateTodo(eq(1L), any(TodoData.class))).thenReturn(updatedServiceDto);
 
         mockMvc.perform(put("/u2m/v1/todos/1")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -113,7 +116,7 @@ class TodoControllerTest {
 
     @Test
     void toggleTodoState_ShouldReturnToggledTodo() throws Exception {
-        TodoServiceDto toggledServiceDto = new TodoServiceDto(1L, 1L, "Test Todo", "icon", true);
+        TodoData toggledServiceDto = new TodoData(1L, 1L, "Test Todo", "icon", true);
 
         when(todoService.toggleTodoState(1L)).thenReturn(Optional.of(toggledServiceDto));
 
@@ -132,6 +135,6 @@ class TodoControllerTest {
         mockMvc.perform(patch("/u2m/v1/todos/1/toggle"))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.status").value(404))
-                .andExpect(jsonPath("$.message").value("Todo not found with id: 1"));
+                .andExpect(jsonPath("$.detail").value("Todo not found with id: 1"));
     }
 }

@@ -10,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -27,7 +26,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserServiceDto createUser(UserServiceDto user) {
+    public UserData createUser(UserData user) {
         log.info("Creating user with name: {}", user.name());
         UserRepositoryDto repoDto = toRepoDto(user);
         UserRepositoryDto savedRepoDto = userAdapter.save(repoDto);
@@ -35,21 +34,21 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<UserServiceDto> getUserById(Long id) {
+    public Optional<UserData> getUserById(Long id) {
         log.info("Fetching user with id: {}", id);
         return userAdapter.findById(id).map(this::toServiceDto);
     }
 
     @Override
-    public List<UserServiceDto> getAllUsers() {
+    public List<UserData> getAllUsers() {
         log.info("Fetching all users");
         return userAdapter.findAll().stream()
                 .map(this::toServiceDto)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
-    public UserServiceDto updateUser(Long id, UserServiceDto user) {
+    public UserData updateUser(Long id, UserData user) {
         log.info("Updating user with id: {}", id);
         UserRepositoryDto repoDto = new UserRepositoryDto(id, user.name(), user.email(), user.currency());
         UserRepositoryDto updatedRepoDto = userAdapter.save(repoDto);
@@ -65,11 +64,11 @@ public class UserServiceImpl implements UserService {
         userAdapter.deleteById(id);
     }
 
-    private UserRepositoryDto toRepoDto(UserServiceDto dto) {
+    private UserRepositoryDto toRepoDto(UserData dto) {
         return new UserRepositoryDto(dto.userid(), dto.name(), dto.email(), dto.currency());
     }
 
-    private UserServiceDto toServiceDto(UserRepositoryDto dto) {
-        return new UserServiceDto(dto.userid(), dto.name(), dto.email(), dto.currency());
+    private UserData toServiceDto(UserRepositoryDto dto) {
+        return new UserData(dto.userid(), dto.name(), dto.email(), dto.currency());
     }
 }

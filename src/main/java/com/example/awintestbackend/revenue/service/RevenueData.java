@@ -1,6 +1,6 @@
 package com.example.awintestbackend.revenue.service;
 
-public record RevenueServiceDto(
+public record RevenueData(
         Double totalRevenue
 ) {
 }

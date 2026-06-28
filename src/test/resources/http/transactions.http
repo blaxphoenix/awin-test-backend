@@ -1,37 +1,43 @@
 ### Create a new transaction
-POST {{host}}/u2m/v1/transactions
+POST http://{{host}}/u2m/v1/transactions
+Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 
 {
   "userid": {{userId}},
   "value": 150.75,
   "details": "Online Shopping",
-  "date": "2026-06-28"
+  "date": "2026-06-28T10:00:00Z"
 }
 
 > {%
- client.global.set("transactionId", response.body.id);
- %}
+    client.global.set("transactionId", response.body.id);
+%}
 
 ### Get all transactions
-GET {{host}}/u2m/v1/transactions
+GET http://{{host}}/u2m/v1/transactions
+Authorization: Basic {{username}} {{password}}
 
 ### Get transactions for user
-GET {{host}}/u2m/v1/transactions?userid={{userId}}
+GET http://{{host}}/u2m/v1/transactions?userid={{userId}}
+Authorization: Basic {{username}} {{password}}
 
 ### Get transaction by id
-GET {{host}}/u2m/v1/transactions/{{transactionId}}
+GET http://{{host}}/u2m/v1/transactions/{{transactionId}}
+Authorization: Basic {{username}} {{password}}
 
 ### Update transaction
-PUT {{host}}/u2m/v1/transactions/{{transactionId}}
+PUT http://{{host}}/u2m/v1/transactions/{{transactionId}}
+Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 
 {
   "userid": {{userId}},
   "value": 200.00,
   "details": "Online Shopping - Updated",
-  "date": "2026-06-29"
+  "date": "2026-06-29T14:00:00Z"
 }
 
 ### Delete transaction
-DELETE {{host}}/u2m/v1/transactions/{{transactionId}}
+DELETE http://{{host}}/u2m/v1/transactions/{{transactionId}}
+Authorization: Basic {{username}} {{password}}

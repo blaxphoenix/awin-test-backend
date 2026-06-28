@@ -69,7 +69,7 @@ class CorrelationIdFilterTest {
         String existingId = UUID.randomUUID().toString();
         when(request.getHeader(CORRELATION_ID_HEADER)).thenReturn(existingId);
 
-        doAnswer(invocation -> {
+        doAnswer(_ -> {
             assertEquals(existingId, MDC.get(CORRELATION_ID_MDC_KEY));
             return null;
         }).when(filterChain).doFilter(request, response);
@@ -84,8 +84,8 @@ class CorrelationIdFilterTest {
         when(request.getHeader(CORRELATION_ID_HEADER)).thenReturn("some-id");
         doThrow(new RuntimeException("Test exception")).when(filterChain).doFilter(request, response);
 
-        assertThrows(RuntimeException.class, () -> 
-            correlationIdFilter.doFilterInternal(request, response, filterChain)
+        assertThrows(RuntimeException.class, () ->
+                correlationIdFilter.doFilterInternal(request, response, filterChain)
         );
 
         assertNull(MDC.get(CORRELATION_ID_MDC_KEY), "MDC should be cleared even on exception");

@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
+import java.time.OffsetDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -44,7 +44,7 @@ class UserDeletionTest {
         todoRepository.saveAndFlush(todo);
 
         // Create transaction for user
-        TransactionEntity transaction = new TransactionEntity(null, savedUser.getUserid(), 100.0, "Test Transaction", LocalDate.now());
+        TransactionEntity transaction = new TransactionEntity(null, savedUser.getUserid(), 100.0, "Test Transaction", OffsetDateTime.now());
         transactionRepository.saveAndFlush(transaction);
 
         // Delete user via service

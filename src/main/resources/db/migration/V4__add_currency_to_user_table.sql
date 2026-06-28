@@ -1,1 +1,2 @@
-ALTER TABLE users ADD COLUMN currency VARCHAR(3);
+ALTER TABLE users
+    ADD COLUMN currency VARCHAR(3);

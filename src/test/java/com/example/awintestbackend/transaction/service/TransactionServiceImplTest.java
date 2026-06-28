@@ -8,9 +8,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import java.time.LocalDate;
+
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -24,20 +26,21 @@ class TransactionServiceImplTest {
     @InjectMocks
     private TransactionServiceImpl transactionService;
 
-    private TransactionServiceDto serviceDto;
+    private TransactionData serviceDto;
     private TransactionRepositoryDto repoDto;
 
     @BeforeEach
     void setUp() {
-        serviceDto = new TransactionServiceDto(1L, 100L, 50.0, "Detail 1", LocalDate.now());
-        repoDto = new TransactionRepositoryDto(1L, 100L, 50.0, "Detail 1", LocalDate.now());
+        OffsetDateTime now = OffsetDateTime.parse("2026-06-28T22:00:00+03:00");
+        serviceDto = new TransactionData(1L, 100L, 50.0, "Detail 1", now);
+        repoDto = new TransactionRepositoryDto(1L, 100L, 50.0, "Detail 1", now);
     }
 
     @Test
     void createTransaction_ShouldReturnCreatedTransaction() {
         when(transactionAdapter.save(any(TransactionRepositoryDto.class))).thenReturn(repoDto);
 
-        TransactionServiceDto result = transactionService.createTransaction(serviceDto);
+        TransactionData result = transactionService.createTransaction(serviceDto);
 
         assertNotNull(result);
         assertEquals(serviceDto.id(), result.id());
@@ -52,7 +55,7 @@ class TransactionServiceImplTest {
     void getTransactionById_WhenTransactionExists_ShouldReturnTransaction() {
         when(transactionAdapter.findById(1L)).thenReturn(Optional.of(repoDto));
 
-        Optional<TransactionServiceDto> result = transactionService.getTransactionById(1L);
+        Optional<TransactionData> result = transactionService.getTransactionById(1L);
 
         assertTrue(result.isPresent());
         assertEquals(serviceDto.id(), result.get().id());
@@ -63,7 +66,7 @@ class TransactionServiceImplTest {
     void getTransactionsByUserid_ShouldReturnListOfTransactions() {
         when(transactionAdapter.findByUserid(100L)).thenReturn(List.of(repoDto));
 
-        List<TransactionServiceDto> result = transactionService.getTransactionsByUserid(100L);
+        List<TransactionData> result = transactionService.getTransactionsByUserid(100L);
 
         assertNotNull(result);
         assertEquals(1, result.size());
@@ -75,7 +78,7 @@ class TransactionServiceImplTest {
     void updateTransaction_ShouldReturnUpdatedTransaction() {
         when(transactionAdapter.save(any(TransactionRepositoryDto.class))).thenReturn(repoDto);
 
-        TransactionServiceDto result = transactionService.updateTransaction(1L, serviceDto);
+        TransactionData result = transactionService.updateTransaction(1L, serviceDto);
 
         assertNotNull(result);
         assertEquals(serviceDto.id(), result.id());

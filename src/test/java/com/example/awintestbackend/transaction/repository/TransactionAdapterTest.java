@@ -6,9 +6,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import java.time.LocalDate;
+
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -27,8 +29,8 @@ class TransactionAdapterTest {
 
     @BeforeEach
     void setUp() {
-        repoDto = new TransactionRepositoryDto(1L, 100L, 50.0, "Detail 1", LocalDate.now());
-        transactionEntity = new TransactionEntity(1L, 100L, 50.0, "Detail 1", LocalDate.now());
+        repoDto = new TransactionRepositoryDto(1L, 100L, 50.0, "Detail 1", OffsetDateTime.now());
+        transactionEntity = new TransactionEntity(1L, 100L, 50.0, "Detail 1", OffsetDateTime.now());
     }
 
     @Test

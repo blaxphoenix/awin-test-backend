@@ -12,10 +12,12 @@ A test backend service for a mock Awin frontend.
     - [x] postgres
     - [x] flyway
 - [x] GitHub actions
+    - [ ] maven release plugin 
 - [x] hexagonal architecture → layers
 - [x] http files for testing
 - [ ] application.yml → separate profiles (local, deployed, test, etc.)
-- [ ] spring security + JWT?
+- [x] spring security
+    - [ ] JWT?
 - [ ] rest client → http interfaces and circuit breaker?
 - [x] exception handling
 - [ ] thread local context?

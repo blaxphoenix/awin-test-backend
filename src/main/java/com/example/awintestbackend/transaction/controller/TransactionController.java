@@ -1,14 +1,14 @@
 package com.example.awintestbackend.transaction.controller;
 
 import com.example.awintestbackend.exception.ResourceNotFoundException;
+import com.example.awintestbackend.transaction.service.TransactionData;
 import com.example.awintestbackend.transaction.service.TransactionService;
-import com.example.awintestbackend.transaction.service.TransactionServiceDto;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(path = "/u2m/v{version}/transactions", version = "1")
@@ -22,8 +22,8 @@ public class TransactionController {
 
     @PostMapping
     public ResponseEntity<TransactionControllerDto> createTransaction(@Valid @RequestBody TransactionControllerDto transactionDto) {
-        TransactionServiceDto serviceDto = toServiceDto(transactionDto);
-        TransactionServiceDto createdTransaction = transactionService.createTransaction(serviceDto);
+        TransactionData serviceDto = toServiceDto(transactionDto);
+        TransactionData createdTransaction = transactionService.createTransaction(serviceDto);
         return new ResponseEntity<>(toControllerDto(createdTransaction), HttpStatus.CREATED);
     }
 
@@ -37,7 +37,7 @@ public class TransactionController {
 
     @GetMapping
     public ResponseEntity<List<TransactionControllerDto>> getAllTransactions(@RequestParam(required = false) Long userid) {
-        List<TransactionServiceDto> transactions;
+        List<TransactionData> transactions;
         if (userid != null) {
             transactions = transactionService.getTransactionsByUserid(userid);
         } else {
@@ -45,14 +45,14 @@ public class TransactionController {
         }
         List<TransactionControllerDto> result = transactions.stream()
                 .map(this::toControllerDto)
-                .collect(Collectors.toList());
+                .toList();
         return ResponseEntity.ok(result);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<TransactionControllerDto> updateTransaction(@PathVariable Long id, @Valid @RequestBody TransactionControllerDto transactionDto) {
-        TransactionServiceDto serviceDto = toServiceDto(transactionDto);
-        TransactionServiceDto updatedTransaction = transactionService.updateTransaction(id, serviceDto);
+        TransactionData serviceDto = toServiceDto(transactionDto);
+        TransactionData updatedTransaction = transactionService.updateTransaction(id, serviceDto);
         return ResponseEntity.ok(toControllerDto(updatedTransaction));
     }
 
@@ -62,11 +62,11 @@ public class TransactionController {
         return ResponseEntity.noContent().build();
     }
 
-    private TransactionServiceDto toServiceDto(TransactionControllerDto dto) {
-        return new TransactionServiceDto(dto.id(), dto.userid(), dto.value(), dto.details(), dto.date());
+    private TransactionData toServiceDto(TransactionControllerDto dto) {
+        return new TransactionData(dto.id(), dto.userid(), dto.value(), dto.details(), dto.date());
     }
 
-    private TransactionControllerDto toControllerDto(TransactionServiceDto dto) {
+    private TransactionControllerDto toControllerDto(TransactionData dto) {
         return new TransactionControllerDto(dto.id(), dto.userid(), dto.value(), dto.details(), dto.date());
     }
 }

@@ -4,7 +4,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Component
 public class UserAdapter {
@@ -28,7 +27,7 @@ public class UserAdapter {
     public List<UserRepositoryDto> findAll() {
         return userRepository.findAll().stream()
                 .map(this::toDto)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public void deleteById(Long id) {

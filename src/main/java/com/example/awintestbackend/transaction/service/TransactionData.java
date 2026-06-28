@@ -1,12 +1,12 @@
 package com.example.awintestbackend.transaction.service;
 
-import java.time.LocalDate;
+import java.time.OffsetDateTime;
 
-public record TransactionServiceDto(
+public record TransactionData(
         Long id,
         Long userid,
         Double value,
         String details,
-        LocalDate date
+        OffsetDateTime date
 ) {
 }

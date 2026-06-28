@@ -1,15 +1,14 @@
 package com.example.awintestbackend.user.controller;
 
 import com.example.awintestbackend.exception.ResourceNotFoundException;
+import com.example.awintestbackend.user.service.UserData;
 import com.example.awintestbackend.user.service.UserService;
-import com.example.awintestbackend.user.service.UserServiceDto;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(path = "/u2m/v{version}/users", version = "1")
@@ -23,8 +22,8 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<UserControllerDto> createUser(@Valid @RequestBody UserControllerDto userDto) {
-        UserServiceDto serviceDto = toServiceDto(userDto);
-        UserServiceDto createdUser = userService.createUser(serviceDto);
+        UserData serviceDto = toServiceDto(userDto);
+        UserData createdUser = userService.createUser(serviceDto);
         return new ResponseEntity<>(toControllerDto(createdUser), HttpStatus.CREATED);
     }
 
@@ -40,14 +39,14 @@ public class UserController {
     public ResponseEntity<List<UserControllerDto>> getAllUsers() {
         List<UserControllerDto> users = userService.getAllUsers().stream()
                 .map(this::toControllerDto)
-                .collect(Collectors.toList());
+                .toList();
         return ResponseEntity.ok(users);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<UserControllerDto> updateUser(@PathVariable Long id, @Valid @RequestBody UserControllerDto userDto) {
-        UserServiceDto serviceDto = toServiceDto(userDto);
-        UserServiceDto updatedUser = userService.updateUser(id, serviceDto);
+        UserData serviceDto = toServiceDto(userDto);
+        UserData updatedUser = userService.updateUser(id, serviceDto);
         return ResponseEntity.ok(toControllerDto(updatedUser));
     }
 
@@ -57,11 +56,11 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
-    private UserServiceDto toServiceDto(UserControllerDto dto) {
-        return new UserServiceDto(dto.userid(), dto.name(), dto.email(), dto.currency());
+    private UserData toServiceDto(UserControllerDto dto) {
+        return new UserData(dto.userid(), dto.name(), dto.email(), dto.currency());
     }
 
-    private UserControllerDto toControllerDto(UserServiceDto dto) {
+    private UserControllerDto toControllerDto(UserData dto) {
         return new UserControllerDto(dto.userid(), dto.name(), dto.email(), dto.currency());
     }
 }
