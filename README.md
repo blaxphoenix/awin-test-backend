@@ -30,8 +30,10 @@
 ## TODO – features
 
 - [x] overall api design (e.g., u2m/v1)
+    - [ ] spring boot 4 api versioning? 
 - [ ] login?
 - [x] user info
-- [ ] todo list
+    - [x] delete it from all other tables too (foreign key)
+- [x] todo list
 - [ ] performance (revenue, transactions, clicks, etc.)
 - [ ] reports/metrics?

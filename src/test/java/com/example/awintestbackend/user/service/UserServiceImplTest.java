@@ -1,5 +1,6 @@
 package com.example.awintestbackend.user.service;
 
+import com.example.awintestbackend.todo.service.TodoService;
 import com.example.awintestbackend.user.repository.UserAdapter;
 import com.example.awintestbackend.user.repository.UserRepositoryDto;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,6 +22,9 @@ class UserServiceImplTest {
 
     @Mock
     private UserAdapter userAdapter;
+
+    @Mock
+    private TodoService todoService;
 
     @InjectMocks
     private UserServiceImpl userService;
@@ -96,11 +100,13 @@ class UserServiceImplTest {
     }
 
     @Test
-    void deleteUser_ShouldCallAdapterDelete() {
+    void deleteUser_ShouldCallTodoServiceAndDeleteAdapter() {
+        doNothing().when(todoService).deleteTodosByUserid(1L);
         doNothing().when(userAdapter).deleteById(1L);
 
         userService.deleteUser(1L);
 
+        verify(todoService, times(1)).deleteTodosByUserid(1L);
         verify(userAdapter, times(1)).deleteById(1L);
     }
 }

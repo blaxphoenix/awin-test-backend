@@ -1,9 +1,11 @@
 package com.example.awintestbackend.user.service;
 
+import com.example.awintestbackend.todo.service.TodoService;
 import com.example.awintestbackend.user.repository.UserAdapter;
 import com.example.awintestbackend.user.repository.UserRepositoryDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,9 +16,11 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
 
     private final UserAdapter userAdapter;
+    private final TodoService todoService;
 
-    public UserServiceImpl(UserAdapter userAdapter) {
+    public UserServiceImpl(UserAdapter userAdapter, TodoService todoService) {
         this.userAdapter = userAdapter;
+        this.todoService = todoService;
     }
 
     @Override
@@ -50,8 +54,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void deleteUser(Long id) {
         log.info("Deleting user with id: {}", id);
+        todoService.deleteTodosByUserid(id);
         userAdapter.deleteById(id);
     }
 

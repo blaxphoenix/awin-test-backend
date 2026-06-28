@@ -1,0 +1,37 @@
+### Create a new todo
+POST {{host}}/u2m/v1/todos
+Content-Type: application/json
+
+{
+  "userid": {{userId}},
+  "description": "Finish the test task",
+  "icon": "task-icon",
+  "state": false
+}
+
+> {%
+ client.global.set("todo_id", response.body.id);
+ %}
+
+### Get all todos
+GET {{host}}/u2m/v1/todos
+
+### Get todos for user
+GET {{host}}/u2m/v1/todos?userid={{userId}}
+
+### Get todo by id
+GET {{host}}/u2m/v1/todos/{{todo_id}}
+
+### Update todo
+PUT {{host}}/u2m/v1/todos/{{todo_id}}
+Content-Type: application/json
+
+{
+  "userid": {{userId}},
+  "description": "Finish the test task - Updated",
+  "icon": "task-icon-updated",
+  "state": true
+}
+
+### Delete todo
+DELETE {{host}}/u2m/v1/todos/{{todo_id}}
