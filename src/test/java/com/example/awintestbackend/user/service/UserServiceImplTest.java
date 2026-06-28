@@ -78,7 +78,7 @@ class UserServiceImplTest {
 
         assertNotNull(result);
         assertEquals(1, result.size());
-        assertEquals(serviceDto.userid(), result.get(0).userid());
+        assertEquals(serviceDto.userid(), result.getFirst().userid());
         verify(userAdapter, times(1)).findAll();
     }
 

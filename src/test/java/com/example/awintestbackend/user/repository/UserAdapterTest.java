@@ -76,7 +76,7 @@ class UserAdapterTest {
 
         assertNotNull(result);
         assertEquals(1, result.size());
-        assertEquals(repoDto.userid(), result.get(0).userid());
+        assertEquals(repoDto.userid(), result.getFirst().userid());
         verify(userRepository, times(1)).findAll();
     }
 
