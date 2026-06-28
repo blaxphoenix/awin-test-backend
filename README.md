@@ -9,10 +9,7 @@
 - [x] db
     - [x] postgres
     - [x] flyway
-- [ ] GitHub actions
-    - [ ] build
-    - [ ] test
-    - [ ] publish
+- [x] GitHub actions
 - [x] hexagonal architecture → layers
 - [x] http files for testing
 - [ ] application.yml → separate profiles (local, deployed, test, etc.)
