@@ -2,6 +2,7 @@ package com.example.awintestbackend.user.controller;
 
 import com.example.awintestbackend.config.SecurityConfig;
 import com.example.awintestbackend.exception.GlobalExceptionHandler;
+import com.example.awintestbackend.user.UserMapper;
 import com.example.awintestbackend.user.service.UserData;
 import com.example.awintestbackend.user.service.UserService;
 import org.junit.jupiter.api.Test;
@@ -35,6 +36,9 @@ class UserControllerTest {
     @MockitoBean
     private UserService userService;
 
+    @MockitoBean
+    private UserMapper userMapper;
+
     @Autowired
     private ObjectMapper objectMapper;
 
@@ -43,7 +47,9 @@ class UserControllerTest {
         UserControllerDto inputDto = new UserControllerDto(null, "John Doe", "john.doe@example.com", "EUR");
         UserData createdServiceDto = new UserData(1L, "John Doe", "john.doe@example.com", "EUR");
 
+        when(userMapper.toData(any(UserControllerDto.class))).thenReturn(createdServiceDto);
         when(userService.createUser(any(UserData.class))).thenReturn(createdServiceDto);
+        when(userMapper.toControllerDto(any(UserData.class))).thenReturn(new UserControllerDto(1L, "John Doe", "john.doe@example.com", "EUR"));
 
         mockMvc.perform(post("/u2m/v1/users")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -74,8 +80,10 @@ class UserControllerTest {
     @Test
     void getUserById_WhenUserExists_ShouldReturnUser() throws Exception {
         UserData userDto = new UserData(1L, "John Doe", "john.doe@example.com", "EUR");
+        UserControllerDto controllerDto = new UserControllerDto(1L, "John Doe", "john.doe@example.com", "EUR");
 
         when(userService.getUserById(1L)).thenReturn(Optional.of(userDto));
+        when(userMapper.toControllerDto(userDto)).thenReturn(controllerDto);
 
         mockMvc.perform(get("/u2m/v1/users/1"))
                 .andExpect(status().isOk())
@@ -99,7 +107,9 @@ class UserControllerTest {
     @Test
     void getAllUsers_ShouldReturnListOfUsers() throws Exception {
         UserData userDto = new UserData(1L, "John Doe", "john.doe@example.com", "EUR");
+        UserControllerDto controllerDto = new UserControllerDto(1L, "John Doe", "john.doe@example.com", "EUR");
         when(userService.getAllUsers()).thenReturn(List.of(userDto));
+        when(userMapper.toControllerDto(userDto)).thenReturn(controllerDto);
 
         mockMvc.perform(get("/u2m/v1/users"))
                 .andExpect(status().isOk())
@@ -114,7 +124,9 @@ class UserControllerTest {
         UserControllerDto inputDto = new UserControllerDto(1L, "John Updated", "john.updated@example.com", "USD");
         UserData updatedServiceDto = new UserData(1L, "John Updated", "john.updated@example.com", "USD");
 
+        when(userMapper.toData(any(UserControllerDto.class))).thenReturn(updatedServiceDto);
         when(userService.updateUser(eq(1L), any(UserData.class))).thenReturn(updatedServiceDto);
+        when(userMapper.toControllerDto(any(UserData.class))).thenReturn(new UserControllerDto(1L, "John Updated", "john.updated@example.com", "USD"));
 
         mockMvc.perform(put("/u2m/v1/users/1")
                         .contentType(MediaType.APPLICATION_JSON)

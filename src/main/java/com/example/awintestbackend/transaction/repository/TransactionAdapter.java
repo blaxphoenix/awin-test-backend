@@ -1,5 +1,5 @@
 package com.example.awintestbackend.transaction.repository;
-
+import com.example.awintestbackend.transaction.TransactionMapper;
 import org.springframework.stereotype.Component;
 
 import java.time.OffsetDateTime;
@@ -8,38 +8,39 @@ import java.util.Optional;
 
 @Component
 public class TransactionAdapter {
-
     private final TransactionRepository transactionRepository;
+    private final TransactionMapper transactionMapper;
 
-    public TransactionAdapter(TransactionRepository transactionRepository) {
+    public TransactionAdapter(TransactionRepository transactionRepository, TransactionMapper transactionMapper) {
         this.transactionRepository = transactionRepository;
+        this.transactionMapper = transactionMapper;
     }
 
     public TransactionRepositoryDto save(TransactionRepositoryDto dto) {
-        TransactionEntity entity = toEntity(dto);
+        TransactionEntity entity = transactionMapper.toEntity(dto);
         TransactionEntity savedEntity = transactionRepository.save(entity);
-        return toDto(savedEntity);
+        return transactionMapper.toRepoDto(savedEntity);
     }
 
     public Optional<TransactionRepositoryDto> findById(Long id) {
-        return transactionRepository.findById(id).map(this::toDto);
+        return transactionRepository.findById(id).map(transactionMapper::toRepoDto);
     }
 
     public List<TransactionRepositoryDto> findAll() {
         return transactionRepository.findAll().stream()
-                .map(this::toDto)
+                .map(transactionMapper::toRepoDto)
                 .toList();
     }
 
     public List<TransactionRepositoryDto> findByUserid(Long userid) {
         return transactionRepository.findByUserid(userid).stream()
-                .map(this::toDto)
+                .map(transactionMapper::toRepoDto)
                 .toList();
     }
 
     public List<TransactionRepositoryDto> findByUseridAndDateGreaterThanEqual(Long userid, OffsetDateTime date) {
         return transactionRepository.findByUseridAndDateGreaterThanEqual(userid, date).stream()
-                .map(this::toDto)
+                .map(transactionMapper::toRepoDto)
                 .toList();
     }
 
@@ -49,13 +50,5 @@ public class TransactionAdapter {
 
     public void deleteByUserid(Long userid) {
         transactionRepository.deleteByUserid(userid);
-    }
-
-    private TransactionEntity toEntity(TransactionRepositoryDto dto) {
-        return new TransactionEntity(dto.id(), dto.userid(), dto.value(), dto.details(), dto.date());
-    }
-
-    private TransactionRepositoryDto toDto(TransactionEntity entity) {
-        return new TransactionRepositoryDto(entity.getId(), entity.getUserid(), entity.getValue(), entity.getDetails(), entity.getDate());
     }
 }

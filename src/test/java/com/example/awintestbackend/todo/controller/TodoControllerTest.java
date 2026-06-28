@@ -2,6 +2,7 @@ package com.example.awintestbackend.todo.controller;
 
 import com.example.awintestbackend.config.SecurityConfig;
 import com.example.awintestbackend.exception.GlobalExceptionHandler;
+import com.example.awintestbackend.todo.TodoMapper;
 import com.example.awintestbackend.todo.service.TodoData;
 import com.example.awintestbackend.todo.service.TodoService;
 import org.junit.jupiter.api.Test;
@@ -35,6 +36,9 @@ class TodoControllerTest {
     @MockitoBean
     private TodoService todoService;
 
+    @MockitoBean
+    private TodoMapper todoMapper;
+
     @Autowired
     private ObjectMapper objectMapper;
 
@@ -43,7 +47,9 @@ class TodoControllerTest {
         TodoControllerDto inputDto = new TodoControllerDto(null, 1L, "Test Todo", "icon", false);
         TodoData createdServiceDto = new TodoData(1L, 1L, "Test Todo", "icon", false);
 
+        when(todoMapper.toData(any(TodoControllerDto.class))).thenReturn(createdServiceDto);
         when(todoService.createTodo(any(TodoData.class))).thenReturn(createdServiceDto);
+        when(todoMapper.toControllerDto(any(TodoData.class))).thenReturn(new TodoControllerDto(1L, 1L, "Test Todo", "icon", false));
 
         mockMvc.perform(post("/u2m/v1/todos")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -59,8 +65,10 @@ class TodoControllerTest {
     @Test
     void getTodoById_WhenExists_ShouldReturnTodo() throws Exception {
         TodoData todoDto = new TodoData(1L, 1L, "Test Todo", "icon", false);
+        TodoControllerDto controllerDto = new TodoControllerDto(1L, 1L, "Test Todo", "icon", false);
 
         when(todoService.getTodoById(1L)).thenReturn(Optional.of(todoDto));
+        when(todoMapper.toControllerDto(todoDto)).thenReturn(controllerDto);
 
         mockMvc.perform(get("/u2m/v1/todos/1"))
                 .andExpect(status().isOk())
@@ -71,7 +79,9 @@ class TodoControllerTest {
     @Test
     void getAllTodos_ShouldReturnList() throws Exception {
         TodoData todoDto = new TodoData(1L, 1L, "Test Todo", "icon", false);
+        TodoControllerDto controllerDto = new TodoControllerDto(1L, 1L, "Test Todo", "icon", false);
         when(todoService.getAllTodos()).thenReturn(List.of(todoDto));
+        when(todoMapper.toControllerDto(todoDto)).thenReturn(controllerDto);
 
         mockMvc.perform(get("/u2m/v1/todos"))
                 .andExpect(status().isOk())
@@ -81,7 +91,9 @@ class TodoControllerTest {
     @Test
     void getTodosByUserid_ShouldReturnFilteredList() throws Exception {
         TodoData todoDto = new TodoData(1L, 1L, "Test Todo", "icon", false);
+        TodoControllerDto controllerDto = new TodoControllerDto(1L, 1L, "Test Todo", "icon", false);
         when(todoService.getTodosByUserid(1L)).thenReturn(List.of(todoDto));
+        when(todoMapper.toControllerDto(todoDto)).thenReturn(controllerDto);
 
         mockMvc.perform(get("/u2m/v1/todos?userid=1"))
                 .andExpect(status().isOk())
@@ -94,7 +106,9 @@ class TodoControllerTest {
         TodoControllerDto inputDto = new TodoControllerDto(1L, 1L, "Updated Todo", "icon", true);
         TodoData updatedServiceDto = new TodoData(1L, 1L, "Updated Todo", "icon", true);
 
+        when(todoMapper.toData(any(TodoControllerDto.class))).thenReturn(updatedServiceDto);
         when(todoService.updateTodo(eq(1L), any(TodoData.class))).thenReturn(updatedServiceDto);
+        when(todoMapper.toControllerDto(any(TodoData.class))).thenReturn(new TodoControllerDto(1L, 1L, "Updated Todo", "icon", true));
 
         mockMvc.perform(put("/u2m/v1/todos/1")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -117,8 +131,10 @@ class TodoControllerTest {
     @Test
     void toggleTodoState_ShouldReturnToggledTodo() throws Exception {
         TodoData toggledServiceDto = new TodoData(1L, 1L, "Test Todo", "icon", true);
+        TodoControllerDto controllerDto = new TodoControllerDto(1L, 1L, "Test Todo", "icon", true);
 
         when(todoService.toggleTodoState(1L)).thenReturn(Optional.of(toggledServiceDto));
+        when(todoMapper.toControllerDto(toggledServiceDto)).thenReturn(controllerDto);
 
         mockMvc.perform(patch("/u2m/v1/todos/1/toggle"))
                 .andExpect(status().isOk())

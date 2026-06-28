@@ -1,5 +1,5 @@
 package com.example.awintestbackend.todo.repository;
-
+import com.example.awintestbackend.todo.TodoMapper;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -7,32 +7,33 @@ import java.util.Optional;
 
 @Component
 public class TodoAdapter {
-
     private final TodoRepository todoRepository;
+    private final TodoMapper todoMapper;
 
-    public TodoAdapter(TodoRepository todoRepository) {
+    public TodoAdapter(TodoRepository todoRepository, TodoMapper todoMapper) {
         this.todoRepository = todoRepository;
+        this.todoMapper = todoMapper;
     }
 
     public TodoRepositoryDto save(TodoRepositoryDto dto) {
-        TodoEntity entity = toEntity(dto);
+        TodoEntity entity = todoMapper.toEntity(dto);
         TodoEntity savedEntity = todoRepository.save(entity);
-        return toDto(savedEntity);
+        return todoMapper.toRepoDto(savedEntity);
     }
 
     public Optional<TodoRepositoryDto> findById(Long id) {
-        return todoRepository.findById(id).map(this::toDto);
+        return todoRepository.findById(id).map(todoMapper::toRepoDto);
     }
 
     public List<TodoRepositoryDto> findAll() {
         return todoRepository.findAll().stream()
-                .map(this::toDto)
+                .map(todoMapper::toRepoDto)
                 .toList();
     }
 
     public List<TodoRepositoryDto> findByUserid(Long userid) {
         return todoRepository.findByUserid(userid).stream()
-                .map(this::toDto)
+                .map(todoMapper::toRepoDto)
                 .toList();
     }
 
@@ -42,13 +43,5 @@ public class TodoAdapter {
 
     public void deleteByUserid(Long userid) {
         todoRepository.deleteByUserid(userid);
-    }
-
-    private TodoEntity toEntity(TodoRepositoryDto dto) {
-        return new TodoEntity(dto.id(), dto.userid(), dto.description(), dto.icon(), dto.state());
-    }
-
-    private TodoRepositoryDto toDto(TodoEntity entity) {
-        return new TodoRepositoryDto(entity.getId(), entity.getUserid(), entity.getDescription(), entity.getIcon(), entity.isState());
     }
 }

@@ -2,6 +2,7 @@ package com.example.awintestbackend.transaction.controller;
 
 import com.example.awintestbackend.config.SecurityConfig;
 import com.example.awintestbackend.exception.GlobalExceptionHandler;
+import com.example.awintestbackend.transaction.TransactionMapper;
 import com.example.awintestbackend.transaction.service.TransactionData;
 import com.example.awintestbackend.transaction.service.TransactionService;
 import org.junit.jupiter.api.Test;
@@ -36,6 +37,9 @@ class TransactionControllerTest {
     @MockitoBean
     private TransactionService transactionService;
 
+    @MockitoBean
+    private TransactionMapper transactionMapper;
+
     @Autowired
     private ObjectMapper objectMapper;
 
@@ -44,7 +48,9 @@ class TransactionControllerTest {
         TransactionControllerDto inputDto = new TransactionControllerDto(null, 1L, 50.0, "Detail 1", OffsetDateTime.now());
         TransactionData createdServiceDto = new TransactionData(1L, 1L, 50.0, "Detail 1", OffsetDateTime.now());
 
+        when(transactionMapper.toData(any(TransactionControllerDto.class))).thenReturn(createdServiceDto);
         when(transactionService.createTransaction(any(TransactionData.class))).thenReturn(createdServiceDto);
+        when(transactionMapper.toControllerDto(any(TransactionData.class))).thenReturn(new TransactionControllerDto(1L, 1L, 50.0, "Detail 1", createdServiceDto.date()));
 
         mockMvc.perform(post("/u2m/v1/transactions")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -60,8 +66,10 @@ class TransactionControllerTest {
     @Test
     void getTransactionById_WhenExists_ShouldReturnTransaction() throws Exception {
         TransactionData transactionDto = new TransactionData(1L, 1L, 50.0, "Detail 1", OffsetDateTime.now());
+        TransactionControllerDto controllerDto = new TransactionControllerDto(1L, 1L, 50.0, "Detail 1", transactionDto.date());
 
         when(transactionService.getTransactionById(1L)).thenReturn(Optional.of(transactionDto));
+        when(transactionMapper.toControllerDto(transactionDto)).thenReturn(controllerDto);
 
         mockMvc.perform(get("/u2m/v1/transactions/1"))
                 .andExpect(status().isOk())
@@ -72,7 +80,9 @@ class TransactionControllerTest {
     @Test
     void getAllTransactions_ShouldReturnList() throws Exception {
         TransactionData transactionDto = new TransactionData(1L, 1L, 50.0, "Detail 1", OffsetDateTime.now());
+        TransactionControllerDto controllerDto = new TransactionControllerDto(1L, 1L, 50.0, "Detail 1", transactionDto.date());
         when(transactionService.getAllTransactions()).thenReturn(List.of(transactionDto));
+        when(transactionMapper.toControllerDto(transactionDto)).thenReturn(controllerDto);
 
         mockMvc.perform(get("/u2m/v1/transactions"))
                 .andExpect(status().isOk())
@@ -82,7 +92,9 @@ class TransactionControllerTest {
     @Test
     void getTransactionsByUserid_ShouldReturnFilteredList() throws Exception {
         TransactionData transactionDto = new TransactionData(1L, 1L, 50.0, "Detail 1", OffsetDateTime.now());
+        TransactionControllerDto controllerDto = new TransactionControllerDto(1L, 1L, 50.0, "Detail 1", transactionDto.date());
         when(transactionService.getTransactionsByUserid(1L)).thenReturn(List.of(transactionDto));
+        when(transactionMapper.toControllerDto(transactionDto)).thenReturn(controllerDto);
 
         mockMvc.perform(get("/u2m/v1/transactions?userid=1"))
                 .andExpect(status().isOk())
@@ -95,7 +107,9 @@ class TransactionControllerTest {
         TransactionControllerDto inputDto = new TransactionControllerDto(1L, 1L, 100.0, "Updated Detail", OffsetDateTime.now());
         TransactionData updatedServiceDto = new TransactionData(1L, 1L, 100.0, "Updated Detail", OffsetDateTime.now());
 
+        when(transactionMapper.toData(any(TransactionControllerDto.class))).thenReturn(updatedServiceDto);
         when(transactionService.updateTransaction(eq(1L), any(TransactionData.class))).thenReturn(updatedServiceDto);
+        when(transactionMapper.toControllerDto(any(TransactionData.class))).thenReturn(new TransactionControllerDto(1L, 1L, 100.0, "Updated Detail", updatedServiceDto.date()));
 
         mockMvc.perform(put("/u2m/v1/transactions/1")
                         .contentType(MediaType.APPLICATION_JSON)

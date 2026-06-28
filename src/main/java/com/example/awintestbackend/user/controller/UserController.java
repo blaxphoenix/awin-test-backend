@@ -1,6 +1,7 @@
 package com.example.awintestbackend.user.controller;
 
 import com.example.awintestbackend.exception.ResourceNotFoundException;
+import com.example.awintestbackend.user.UserMapper;
 import com.example.awintestbackend.user.service.UserData;
 import com.example.awintestbackend.user.service.UserService;
 import jakarta.validation.Valid;
@@ -13,24 +14,25 @@ import java.util.List;
 @RestController
 @RequestMapping(path = "/u2m/v{version}/users", version = "1")
 public class UserController {
-
     private final UserService userService;
+    private final UserMapper userMapper;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, UserMapper userMapper) {
         this.userService = userService;
+        this.userMapper = userMapper;
     }
 
     @PostMapping
     public ResponseEntity<UserControllerDto> createUser(@Valid @RequestBody UserControllerDto userDto) {
-        UserData serviceDto = toServiceDto(userDto);
+        UserData serviceDto = userMapper.toData(userDto);
         UserData createdUser = userService.createUser(serviceDto);
-        return new ResponseEntity<>(toControllerDto(createdUser), HttpStatus.CREATED);
+        return new ResponseEntity<>(userMapper.toControllerDto(createdUser), HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<UserControllerDto> getUserById(@PathVariable Long id) {
         UserControllerDto user = userService.getUserById(id)
-                .map(this::toControllerDto)
+                .map(userMapper::toControllerDto)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
         return ResponseEntity.ok(user);
     }
@@ -38,29 +40,21 @@ public class UserController {
     @GetMapping
     public ResponseEntity<List<UserControllerDto>> getAllUsers() {
         List<UserControllerDto> users = userService.getAllUsers().stream()
-                .map(this::toControllerDto)
+                .map(userMapper::toControllerDto)
                 .toList();
         return ResponseEntity.ok(users);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<UserControllerDto> updateUser(@PathVariable Long id, @Valid @RequestBody UserControllerDto userDto) {
-        UserData serviceDto = toServiceDto(userDto);
+        UserData serviceDto = userMapper.toData(userDto);
         UserData updatedUser = userService.updateUser(id, serviceDto);
-        return ResponseEntity.ok(toControllerDto(updatedUser));
+        return ResponseEntity.ok(userMapper.toControllerDto(updatedUser));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
         return ResponseEntity.noContent().build();
-    }
-
-    private UserData toServiceDto(UserControllerDto dto) {
-        return new UserData(dto.userid(), dto.name(), dto.email(), dto.currency());
-    }
-
-    private UserControllerDto toControllerDto(UserData dto) {
-        return new UserControllerDto(dto.userid(), dto.name(), dto.email(), dto.currency());
     }
 }

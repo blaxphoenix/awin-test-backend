@@ -22,12 +22,14 @@ A test backend service for a mock Awin frontend.
 - [x] exception handling
 - [ ] thread local context?
 - [x] MDC for logging + logback configs
+    - [ ] needs to be updated if going async 
 - [ ] swagger + UI?
 - [x] dto validations
 - [x] unit/integration tests
     - [ ] test containers?
 - [ ] caching?
 - [ ] virtual threads?
+- [x] mapstruct
 
 ## TODO – features
 

@@ -1,5 +1,6 @@
 package com.example.awintestbackend.transaction.service;
 
+import com.example.awintestbackend.transaction.TransactionMapper;
 import com.example.awintestbackend.transaction.repository.TransactionAdapter;
 import com.example.awintestbackend.transaction.repository.TransactionRepositoryDto;
 import lombok.extern.slf4j.Slf4j;
@@ -11,32 +12,33 @@ import java.util.Optional;
 @Slf4j
 @Service
 public class TransactionServiceImpl implements TransactionService {
-
     private final TransactionAdapter transactionAdapter;
+    private final TransactionMapper transactionMapper;
 
-    public TransactionServiceImpl(TransactionAdapter transactionAdapter) {
+    public TransactionServiceImpl(TransactionAdapter transactionAdapter, TransactionMapper transactionMapper) {
         this.transactionAdapter = transactionAdapter;
+        this.transactionMapper = transactionMapper;
     }
 
     @Override
     public TransactionData createTransaction(TransactionData transaction) {
         log.info("Creating transaction for user: {}", transaction.userid());
-        TransactionRepositoryDto repoDto = toRepoDto(transaction);
+        TransactionRepositoryDto repoDto = transactionMapper.toRepoDto(transaction);
         TransactionRepositoryDto savedRepoDto = transactionAdapter.save(repoDto);
-        return toServiceDto(savedRepoDto);
+        return transactionMapper.toData(savedRepoDto);
     }
 
     @Override
     public Optional<TransactionData> getTransactionById(Long id) {
         log.info("Fetching transaction with id: {}", id);
-        return transactionAdapter.findById(id).map(this::toServiceDto);
+        return transactionAdapter.findById(id).map(transactionMapper::toData);
     }
 
     @Override
     public List<TransactionData> getAllTransactions() {
         log.info("Fetching all transactions");
         return transactionAdapter.findAll().stream()
-                .map(this::toServiceDto)
+                .map(transactionMapper::toData)
                 .toList();
     }
 
@@ -44,16 +46,16 @@ public class TransactionServiceImpl implements TransactionService {
     public List<TransactionData> getTransactionsByUserid(Long userid) {
         log.info("Fetching transactions for user: {}", userid);
         return transactionAdapter.findByUserid(userid).stream()
-                .map(this::toServiceDto)
+                .map(transactionMapper::toData)
                 .toList();
     }
 
     @Override
     public TransactionData updateTransaction(Long id, TransactionData transaction) {
         log.info("Updating transaction with id: {}", id);
-        TransactionRepositoryDto repoDto = new TransactionRepositoryDto(id, transaction.userid(), transaction.value(), transaction.details(), transaction.date());
+        TransactionRepositoryDto repoDto = transactionMapper.toRepoDto(id, transaction);
         TransactionRepositoryDto updatedRepoDto = transactionAdapter.save(repoDto);
-        return toServiceDto(updatedRepoDto);
+        return transactionMapper.toData(updatedRepoDto);
     }
 
     @Override
@@ -66,13 +68,5 @@ public class TransactionServiceImpl implements TransactionService {
     public void deleteTransactionsByUserid(Long userid) {
         log.info("Deleting transactions for user: {}", userid);
         transactionAdapter.deleteByUserid(userid);
-    }
-
-    private TransactionRepositoryDto toRepoDto(TransactionData dto) {
-        return new TransactionRepositoryDto(dto.id(), dto.userid(), dto.value(), dto.details(), dto.date());
-    }
-
-    private TransactionData toServiceDto(TransactionRepositoryDto dto) {
-        return new TransactionData(dto.id(), dto.userid(), dto.value(), dto.details(), dto.date());
     }
 }

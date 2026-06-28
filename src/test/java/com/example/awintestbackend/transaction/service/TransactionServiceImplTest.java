@@ -1,12 +1,15 @@
 package com.example.awintestbackend.transaction.service;
 
+import com.example.awintestbackend.transaction.TransactionMapper;
 import com.example.awintestbackend.transaction.repository.TransactionAdapter;
 import com.example.awintestbackend.transaction.repository.TransactionRepositoryDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mapstruct.factory.Mappers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.OffsetDateTime;
@@ -22,6 +25,9 @@ class TransactionServiceImplTest {
 
     @Mock
     private TransactionAdapter transactionAdapter;
+
+    @Spy
+    private TransactionMapper transactionMapper = Mappers.getMapper(TransactionMapper.class);
 
     @InjectMocks
     private TransactionServiceImpl transactionService;

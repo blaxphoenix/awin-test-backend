@@ -1,6 +1,7 @@
 package com.example.awintestbackend.todo.controller;
 
 import com.example.awintestbackend.exception.ResourceNotFoundException;
+import com.example.awintestbackend.todo.TodoMapper;
 import com.example.awintestbackend.todo.service.TodoData;
 import com.example.awintestbackend.todo.service.TodoService;
 import jakarta.validation.Valid;
@@ -13,24 +14,25 @@ import java.util.List;
 @RestController
 @RequestMapping(path = "/u2m/v{version}/todos", version = "1")
 public class TodoController {
-
     private final TodoService todoService;
+    private final TodoMapper todoMapper;
 
-    public TodoController(TodoService todoService) {
+    public TodoController(TodoService todoService, TodoMapper todoMapper) {
         this.todoService = todoService;
+        this.todoMapper = todoMapper;
     }
 
     @PostMapping
     public ResponseEntity<TodoControllerDto> createTodo(@Valid @RequestBody TodoControllerDto todoDto) {
-        TodoData serviceDto = toServiceDto(todoDto);
+        TodoData serviceDto = todoMapper.toData(todoDto);
         TodoData createdTodo = todoService.createTodo(serviceDto);
-        return new ResponseEntity<>(toControllerDto(createdTodo), HttpStatus.CREATED);
+        return new ResponseEntity<>(todoMapper.toControllerDto(createdTodo), HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<TodoControllerDto> getTodoById(@PathVariable Long id) {
         TodoControllerDto todo = todoService.getTodoById(id)
-                .map(this::toControllerDto)
+                .map(todoMapper::toControllerDto)
                 .orElseThrow(() -> new ResourceNotFoundException("Todo not found with id: " + id));
         return ResponseEntity.ok(todo);
     }
@@ -44,16 +46,16 @@ public class TodoController {
             todos = todoService.getAllTodos();
         }
         List<TodoControllerDto> result = todos.stream()
-                .map(this::toControllerDto)
+                .map(todoMapper::toControllerDto)
                 .toList();
         return ResponseEntity.ok(result);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<TodoControllerDto> updateTodo(@PathVariable Long id, @Valid @RequestBody TodoControllerDto todoDto) {
-        TodoData serviceDto = toServiceDto(todoDto);
+        TodoData serviceDto = todoMapper.toData(todoDto);
         TodoData updatedTodo = todoService.updateTodo(id, serviceDto);
-        return ResponseEntity.ok(toControllerDto(updatedTodo));
+        return ResponseEntity.ok(todoMapper.toControllerDto(updatedTodo));
     }
 
     @DeleteMapping("/{id}")
@@ -65,16 +67,8 @@ public class TodoController {
     @PatchMapping("/{id}/toggle")
     public ResponseEntity<TodoControllerDto> toggleTodoState(@PathVariable Long id) {
         TodoControllerDto todo = todoService.toggleTodoState(id)
-                .map(this::toControllerDto)
+                .map(todoMapper::toControllerDto)
                 .orElseThrow(() -> new ResourceNotFoundException("Todo not found with id: " + id));
         return ResponseEntity.ok(todo);
-    }
-
-    private TodoData toServiceDto(TodoControllerDto dto) {
-        return new TodoData(dto.id(), dto.userid(), dto.description(), dto.icon(), dto.state());
-    }
-
-    private TodoControllerDto toControllerDto(TodoData dto) {
-        return new TodoControllerDto(dto.id(), dto.userid(), dto.description(), dto.icon(), dto.state());
     }
 }

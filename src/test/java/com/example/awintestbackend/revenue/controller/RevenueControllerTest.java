@@ -2,6 +2,7 @@ package com.example.awintestbackend.revenue.controller;
 
 import com.example.awintestbackend.config.SecurityConfig;
 import com.example.awintestbackend.exception.GlobalExceptionHandler;
+import com.example.awintestbackend.revenue.RevenueMapper;
 import com.example.awintestbackend.revenue.service.RevenueData;
 import com.example.awintestbackend.revenue.service.RevenueService;
 import org.junit.jupiter.api.Test;
@@ -12,6 +13,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -28,9 +30,13 @@ class RevenueControllerTest {
     @MockitoBean
     private RevenueService revenueService;
 
+    @MockitoBean
+    private RevenueMapper revenueMapper;
+
     @Test
     void getTotalRevenue_ShouldReturnRevenue() throws Exception {
         when(revenueService.getTotalRevenue(1L, 7)).thenReturn(new RevenueData(500.0));
+        when(revenueMapper.toControllerDto(any(RevenueData.class))).thenReturn(new RevenueControllerDto(500.0));
 
         mockMvc.perform(get("/u2m/v1/revenue")
                         .param("userId", "1")
@@ -42,6 +48,7 @@ class RevenueControllerTest {
     @Test
     void getTotalRevenue_WithDefaultValue_ShouldReturnRevenue() throws Exception {
         when(revenueService.getTotalRevenue(1L, 30)).thenReturn(new RevenueData(1000.0));
+        when(revenueMapper.toControllerDto(any(RevenueData.class))).thenReturn(new RevenueControllerDto(1000.0));
 
         mockMvc.perform(get("/u2m/v1/revenue")
                         .param("userId", "1"))

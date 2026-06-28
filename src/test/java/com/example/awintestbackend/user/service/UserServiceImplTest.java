@@ -2,13 +2,16 @@ package com.example.awintestbackend.user.service;
 
 import com.example.awintestbackend.todo.service.TodoService;
 import com.example.awintestbackend.transaction.service.TransactionService;
+import com.example.awintestbackend.user.UserMapper;
 import com.example.awintestbackend.user.repository.UserAdapter;
 import com.example.awintestbackend.user.repository.UserRepositoryDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mapstruct.factory.Mappers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
@@ -29,6 +32,9 @@ class UserServiceImplTest {
 
     @Mock
     private TransactionService transactionService;
+
+    @Spy
+    private UserMapper userMapper = Mappers.getMapper(UserMapper.class);
 
     @InjectMocks
     private UserServiceImpl userService;
