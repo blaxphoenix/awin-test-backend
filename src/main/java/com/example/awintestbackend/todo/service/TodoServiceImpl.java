@@ -69,6 +69,21 @@ public class TodoServiceImpl implements TodoService {
         todoAdapter.deleteByUserid(userid);
     }
 
+    @Override
+    public Optional<TodoServiceDto> toggleTodoState(Long id) {
+        log.info("Toggling state for todo with id: {}", id);
+        return todoAdapter.findById(id).map(todo -> {
+            TodoRepositoryDto updatedDto = new TodoRepositoryDto(
+                    todo.id(),
+                    todo.userid(),
+                    todo.description(),
+                    todo.icon(),
+                    !todo.state()
+            );
+            return toServiceDto(todoAdapter.save(updatedDto));
+        });
+    }
+
     private TodoRepositoryDto toRepoDto(TodoServiceDto dto) {
         return new TodoRepositoryDto(dto.id(), dto.userid(), dto.description(), dto.icon(), dto.state());
     }

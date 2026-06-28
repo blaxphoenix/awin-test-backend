@@ -11,4 +11,5 @@ public interface TodoService {
     TodoServiceDto updateTodo(Long id, TodoServiceDto todo);
     void deleteTodo(Long id);
     void deleteTodosByUserid(Long userid);
+    Optional<TodoServiceDto> toggleTodoState(Long id);
 }

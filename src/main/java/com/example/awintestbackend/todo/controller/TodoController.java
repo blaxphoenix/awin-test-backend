@@ -61,6 +61,14 @@ public class TodoController {
         return ResponseEntity.noContent().build();
     }
 
+    @PatchMapping("/{id}/toggle")
+    public ResponseEntity<TodoControllerDto> toggleTodoState(@PathVariable Long id) {
+        return todoService.toggleTodoState(id)
+                .map(this::toControllerDto)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
     private TodoServiceDto toServiceDto(TodoControllerDto dto) {
         return new TodoServiceDto(dto.id(), dto.userid(), dto.description(), dto.icon(), dto.state());
     }

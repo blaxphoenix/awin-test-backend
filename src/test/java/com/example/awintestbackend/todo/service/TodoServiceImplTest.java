@@ -91,4 +91,20 @@ class TodoServiceImplTest {
 
         verify(todoAdapter, times(1)).deleteById(1L);
     }
+
+    @Test
+    void toggleTodoState_ShouldToggleState() {
+        TodoRepositoryDto initialRepoDto = new TodoRepositoryDto(1L, 100L, "Task 1", "icon-1", false);
+        TodoRepositoryDto toggledRepoDto = new TodoRepositoryDto(1L, 100L, "Task 1", "icon-1", true);
+
+        when(todoAdapter.findById(1L)).thenReturn(Optional.of(initialRepoDto));
+        when(todoAdapter.save(any(TodoRepositoryDto.class))).thenReturn(toggledRepoDto);
+
+        Optional<TodoServiceDto> result = todoService.toggleTodoState(1L);
+
+        assertTrue(result.isPresent());
+        assertTrue(result.get().state());
+        verify(todoAdapter, times(1)).findById(1L);
+        verify(todoAdapter, times(1)).save(argThat(TodoRepositoryDto::state));
+    }
 }

@@ -109,4 +109,26 @@ class TodoControllerTest {
 
         verify(todoService, times(1)).deleteTodo(1L);
     }
+
+    @Test
+    void toggleTodoState_ShouldReturnToggledTodo() throws Exception {
+        TodoServiceDto toggledServiceDto = new TodoServiceDto(1L, 1L, "Test Todo", "icon", true);
+
+        when(todoService.toggleTodoState(1L)).thenReturn(Optional.of(toggledServiceDto));
+
+        mockMvc.perform(patch("/u2m/v1/todos/1/toggle"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1L))
+                .andExpect(jsonPath("$.state").value(true));
+
+        verify(todoService, times(1)).toggleTodoState(1L);
+    }
+
+    @Test
+    void toggleTodoState_WhenNotFound_ShouldReturnNotFound() throws Exception {
+        when(todoService.toggleTodoState(1L)).thenReturn(Optional.empty());
+
+        mockMvc.perform(patch("/u2m/v1/todos/1/toggle"))
+                .andExpect(status().isNotFound());
+    }
 }

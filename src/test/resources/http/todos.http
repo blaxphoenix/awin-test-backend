@@ -3,7 +3,7 @@ POST {{host}}/u2m/v1/todos
 Content-Type: application/json
 
 {
-  "userid": {{userId}},
+  "userid": {{user_id}},
   "description": "Finish the test task",
   "icon": "task-icon",
   "state": false
@@ -17,7 +17,7 @@ Content-Type: application/json
 GET {{host}}/u2m/v1/todos
 
 ### Get todos for user
-GET {{host}}/u2m/v1/todos?userid={{userId}}
+GET {{host}}/u2m/v1/todos?userid={{user_id}}
 
 ### Get todo by id
 GET {{host}}/u2m/v1/todos/{{todo_id}}
@@ -27,11 +27,14 @@ PUT {{host}}/u2m/v1/todos/{{todo_id}}
 Content-Type: application/json
 
 {
-  "userid": {{userId}},
+  "userid": {{user_id}},
   "description": "Finish the test task - Updated",
   "icon": "task-icon-updated",
   "state": true
 }
+
+### Toggle todo state
+PATCH {{host}}/u2m/v1/todos/{{todo_id}}/toggle
 
 ### Delete todo
 DELETE {{host}}/u2m/v1/todos/{{todo_id}}

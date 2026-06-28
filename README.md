@@ -26,6 +26,7 @@
 - [ ] unit/integration tests
     - [ ] test containers?
 - [ ] caching?
+- [ ] virtual threads?
 
 ## TODO – features
 
