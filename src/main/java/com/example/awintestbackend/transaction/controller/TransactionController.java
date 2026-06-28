@@ -1,5 +1,6 @@
 package com.example.awintestbackend.transaction.controller;
 
+import com.example.awintestbackend.exception.ResourceNotFoundException;
 import com.example.awintestbackend.transaction.service.TransactionService;
 import com.example.awintestbackend.transaction.service.TransactionServiceDto;
 import jakarta.validation.Valid;
@@ -28,23 +29,24 @@ public class TransactionController {
 
     @GetMapping("/{id}")
     public ResponseEntity<TransactionControllerDto> getTransactionById(@PathVariable Long id) {
-        return transactionService.getTransactionById(id)
+        TransactionControllerDto transaction = transactionService.getTransactionById(id)
                 .map(this::toControllerDto)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+                .orElseThrow(() -> new ResourceNotFoundException("Transaction not found with id: " + id));
+        return ResponseEntity.ok(transaction);
     }
 
     @GetMapping
-    public List<TransactionControllerDto> getAllTransactions(@RequestParam(required = false) Long userid) {
+    public ResponseEntity<List<TransactionControllerDto>> getAllTransactions(@RequestParam(required = false) Long userid) {
         List<TransactionServiceDto> transactions;
         if (userid != null) {
             transactions = transactionService.getTransactionsByUserid(userid);
         } else {
             transactions = transactionService.getAllTransactions();
         }
-        return transactions.stream()
+        List<TransactionControllerDto> result = transactions.stream()
                 .map(this::toControllerDto)
                 .collect(Collectors.toList());
+        return ResponseEntity.ok(result);
     }
 
     @PutMapping("/{id}")

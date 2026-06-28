@@ -17,7 +17,7 @@ A test backend service for a mock Awin frontend.
 - [ ] application.yml → separate profiles (local, deployed, test, etc.)
 - [ ] spring security + JWT?
 - [ ] rest client → http interfaces and circuit breaker?
-- [ ] exception handling
+- [x] exception handling
 - [ ] thread local context?
 - [x] MDC for logging + logback configs
 - [ ] swagger + UI?

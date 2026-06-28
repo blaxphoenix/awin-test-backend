@@ -1,5 +1,6 @@
 package com.example.awintestbackend.user.controller;
 
+import com.example.awintestbackend.exception.ResourceNotFoundException;
 import com.example.awintestbackend.user.service.UserService;
 import com.example.awintestbackend.user.service.UserServiceDto;
 import jakarta.validation.Valid;
@@ -29,17 +30,18 @@ public class UserController {
 
     @GetMapping("/{id}")
     public ResponseEntity<UserControllerDto> getUserById(@PathVariable Long id) {
-        return userService.getUserById(id)
+        UserControllerDto user = userService.getUserById(id)
                 .map(this::toControllerDto)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
+        return ResponseEntity.ok(user);
     }
 
     @GetMapping
-    public List<UserControllerDto> getAllUsers() {
-        return userService.getAllUsers().stream()
+    public ResponseEntity<List<UserControllerDto>> getAllUsers() {
+        List<UserControllerDto> users = userService.getAllUsers().stream()
                 .map(this::toControllerDto)
                 .collect(Collectors.toList());
+        return ResponseEntity.ok(users);
     }
 
     @PutMapping("/{id}")

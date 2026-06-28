@@ -1,6 +1,7 @@
 package com.example.awintestbackend.todo.controller;
 
 import com.example.awintestbackend.config.SecurityConfig;
+import com.example.awintestbackend.exception.GlobalExceptionHandler;
 import com.example.awintestbackend.todo.service.TodoService;
 import com.example.awintestbackend.todo.service.TodoServiceDto;
 import org.junit.jupiter.api.Test;
@@ -22,7 +23,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(TodoController.class)
-@Import(SecurityConfig.class)
+@Import({SecurityConfig.class, GlobalExceptionHandler.class})
 class TodoControllerTest {
 
     @Autowired
@@ -125,10 +126,12 @@ class TodoControllerTest {
     }
 
     @Test
-    void toggleTodoState_WhenNotFound_ShouldReturnNotFound() throws Exception {
+    void toggleTodoState_WhenNotFound_ShouldReturnNotFoundWithBody() throws Exception {
         when(todoService.toggleTodoState(1L)).thenReturn(Optional.empty());
 
         mockMvc.perform(patch("/u2m/v1/todos/1/toggle"))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.status").value(404))
+                .andExpect(jsonPath("$.message").value("Todo not found with id: 1"));
     }
 }

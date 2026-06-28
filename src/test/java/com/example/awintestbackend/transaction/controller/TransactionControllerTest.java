@@ -1,6 +1,7 @@
 package com.example.awintestbackend.transaction.controller;
 
 import com.example.awintestbackend.config.SecurityConfig;
+import com.example.awintestbackend.exception.GlobalExceptionHandler;
 import com.example.awintestbackend.transaction.service.TransactionService;
 import com.example.awintestbackend.transaction.service.TransactionServiceDto;
 import org.junit.jupiter.api.Test;
@@ -21,7 +22,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(TransactionController.class)
-@Import(SecurityConfig.class)
+@Import({SecurityConfig.class, GlobalExceptionHandler.class})
 class TransactionControllerTest {
 
     @Autowired
@@ -107,5 +108,15 @@ class TransactionControllerTest {
                 .andExpect(status().isNoContent());
 
         verify(transactionService, times(1)).deleteTransaction(1L);
+    }
+
+    @Test
+    void getTransactionById_WhenNotFound_ShouldReturnNotFoundWithBody() throws Exception {
+        when(transactionService.getTransactionById(1L)).thenReturn(Optional.empty());
+
+        mockMvc.perform(get("/u2m/v1/transactions/1"))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.status").value(404))
+                .andExpect(jsonPath("$.message").value("Transaction not found with id: 1"));
     }
 }

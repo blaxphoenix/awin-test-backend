@@ -1,6 +1,7 @@
 package com.example.awintestbackend.revenue.controller;
 
 import com.example.awintestbackend.config.SecurityConfig;
+import com.example.awintestbackend.exception.GlobalExceptionHandler;
 import com.example.awintestbackend.revenue.service.RevenueService;
 import com.example.awintestbackend.revenue.service.RevenueServiceDto;
 import org.junit.jupiter.api.Test;
@@ -16,7 +17,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(RevenueController.class)
-@Import(SecurityConfig.class)
+@Import({SecurityConfig.class, GlobalExceptionHandler.class})
 class RevenueControllerTest {
 
     @Autowired

@@ -1,6 +1,7 @@
 package com.example.awintestbackend.user.controller;
 
 import com.example.awintestbackend.config.SecurityConfig;
+import com.example.awintestbackend.exception.GlobalExceptionHandler;
 import com.example.awintestbackend.user.service.UserService;
 import com.example.awintestbackend.user.service.UserServiceDto;
 import org.junit.jupiter.api.Test;
@@ -19,10 +20,11 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(UserController.class)
-@Import(SecurityConfig.class)
+@Import({SecurityConfig.class, GlobalExceptionHandler.class})
 class UserControllerTest {
 
     @Autowired
@@ -54,13 +56,17 @@ class UserControllerTest {
     }
 
     @Test
-    void createUser_WithInvalidInput_ShouldReturnBadRequest() throws Exception {
+    void createUser_WithInvalidInput_ShouldReturnBadRequestWithValidationErrors() throws Exception {
         UserControllerDto invalidDto = new UserControllerDto(null, "", "invalid-email", "US");
 
         mockMvc.perform(post("/u2m/v1/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidDto)))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.message").value("Validation failed"))
+                .andExpect(jsonPath("$.errors.name").exists())
+                .andExpect(jsonPath("$.errors.email").exists());
     }
 
     @Test
@@ -78,11 +84,14 @@ class UserControllerTest {
     }
 
     @Test
-    void getUserById_WhenUserDoesNotExist_ShouldReturnNotFound() throws Exception {
+    void getUserById_WhenUserDoesNotExist_ShouldReturnNotFoundWithBody() throws Exception {
         when(userService.getUserById(1L)).thenReturn(Optional.empty());
 
         mockMvc.perform(get("/u2m/v1/users/1"))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.status").value(404))
+                .andExpect(jsonPath("$.message").value("User not found with id: 1"))
+                .andExpect(jsonPath("$.timestamp").exists());
     }
 
     @Test

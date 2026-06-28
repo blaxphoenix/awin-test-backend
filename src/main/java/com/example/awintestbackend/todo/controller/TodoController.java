@@ -1,5 +1,6 @@
 package com.example.awintestbackend.todo.controller;
 
+import com.example.awintestbackend.exception.ResourceNotFoundException;
 import com.example.awintestbackend.todo.service.TodoService;
 import com.example.awintestbackend.todo.service.TodoServiceDto;
 import jakarta.validation.Valid;
@@ -29,23 +30,24 @@ public class TodoController {
 
     @GetMapping("/{id}")
     public ResponseEntity<TodoControllerDto> getTodoById(@PathVariable Long id) {
-        return todoService.getTodoById(id)
+        TodoControllerDto todo = todoService.getTodoById(id)
                 .map(this::toControllerDto)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+                .orElseThrow(() -> new ResourceNotFoundException("Todo not found with id: " + id));
+        return ResponseEntity.ok(todo);
     }
 
     @GetMapping
-    public List<TodoControllerDto> getAllTodos(@RequestParam(required = false) Long userid) {
+    public ResponseEntity<List<TodoControllerDto>> getAllTodos(@RequestParam(required = false) Long userid) {
         List<TodoServiceDto> todos;
         if (userid != null) {
             todos = todoService.getTodosByUserid(userid);
         } else {
             todos = todoService.getAllTodos();
         }
-        return todos.stream()
+        List<TodoControllerDto> result = todos.stream()
                 .map(this::toControllerDto)
                 .collect(Collectors.toList());
+        return ResponseEntity.ok(result);
     }
 
     @PutMapping("/{id}")
@@ -63,10 +65,10 @@ public class TodoController {
 
     @PatchMapping("/{id}/toggle")
     public ResponseEntity<TodoControllerDto> toggleTodoState(@PathVariable Long id) {
-        return todoService.toggleTodoState(id)
+        TodoControllerDto todo = todoService.toggleTodoState(id)
                 .map(this::toControllerDto)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+                .orElseThrow(() -> new ResourceNotFoundException("Todo not found with id: " + id));
+        return ResponseEntity.ok(todo);
     }
 
     private TodoServiceDto toServiceDto(TodoControllerDto dto) {
