@@ -3,6 +3,7 @@ package com.example.awintestbackend.revenue.controller;
 import com.example.awintestbackend.revenue.RevenueMapper;
 import com.example.awintestbackend.revenue.service.RevenueData;
 import com.example.awintestbackend.revenue.service.RevenueService;
+import com.example.awintestbackend.revenue.service.RevenueTrendData;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,5 +27,13 @@ public class RevenueController {
             @RequestParam(defaultValue = "30") int days) {
         RevenueData serviceDto = revenueService.getTotalRevenue(userId, days);
         return ResponseEntity.ok(revenueMapper.toControllerDto(serviceDto));
+    }
+
+    @GetMapping("/trend")
+    public ResponseEntity<RevenueControllerDto.RevenueTrendControllerDto> getRevenueTrend(
+            @RequestParam Long userId,
+            @RequestParam(defaultValue = "30") int days) {
+        RevenueTrendData trendData = revenueService.getRevenueTrend(userId, days);
+        return ResponseEntity.ok(revenueMapper.toControllerDto(trendData));
     }
 }

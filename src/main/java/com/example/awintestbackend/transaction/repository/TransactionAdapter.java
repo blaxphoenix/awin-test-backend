@@ -1,4 +1,5 @@
 package com.example.awintestbackend.transaction.repository;
+import com.example.awintestbackend.revenue.repository.RevenueTrendRepositoryDto;
 import com.example.awintestbackend.transaction.TransactionMapper;
 import org.springframework.stereotype.Component;
 
@@ -50,5 +51,9 @@ public class TransactionAdapter {
 
     public void deleteByUserid(Long userid) {
         transactionRepository.deleteByUserid(userid);
+    }
+
+    public List<RevenueTrendRepositoryDto> findDailyRevenueTrend(Long userid, OffsetDateTime startDate) {
+        return transactionRepository.findDailyRevenueTrend(userid, startDate);
     }
 }

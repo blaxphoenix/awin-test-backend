@@ -1,5 +1,6 @@
 package com.example.awintestbackend.revenue.service;
 
+import com.example.awintestbackend.revenue.repository.RevenueTrendRepositoryDto;
 import com.example.awintestbackend.transaction.repository.TransactionAdapter;
 import com.example.awintestbackend.transaction.repository.TransactionRepositoryDto;
 import lombok.extern.slf4j.Slf4j;
@@ -29,5 +30,18 @@ public class RevenueServiceImpl implements RevenueService {
                 .sum();
 
         return new RevenueData(totalRevenue);
+    }
+
+    @Override
+    public RevenueTrendData getRevenueTrend(Long userId, int days) {
+        log.info("Calculating revenue trend for user {} for the past {} days", userId, days);
+        OffsetDateTime startDate = OffsetDateTime.now().minusDays(days);
+        List<RevenueTrendRepositoryDto> trend = transactionAdapter.findDailyRevenueTrend(userId, startDate);
+
+        List<RevenueTrendData.DailyRevenueData> dailyData = trend.stream()
+                .map(dto -> new RevenueTrendData.DailyRevenueData(dto.date(), dto.totalRevenue()))
+                .toList();
+
+        return new RevenueTrendData(dailyData);
     }
 }

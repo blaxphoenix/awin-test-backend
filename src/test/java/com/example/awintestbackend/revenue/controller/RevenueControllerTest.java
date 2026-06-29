@@ -5,6 +5,7 @@ import com.example.awintestbackend.exception.GlobalExceptionHandler;
 import com.example.awintestbackend.revenue.RevenueMapper;
 import com.example.awintestbackend.revenue.service.RevenueData;
 import com.example.awintestbackend.revenue.service.RevenueService;
+import com.example.awintestbackend.revenue.service.RevenueTrendData;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
@@ -12,6 +13,9 @@ import org.springframework.context.annotation.Import;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+
+import java.time.LocalDate;
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -59,6 +63,51 @@ class RevenueControllerTest {
     @Test
     void getTotalRevenue_WithoutUserId_ShouldReturnBadRequest() throws Exception {
         mockMvc.perform(get("/u2m/v1/revenue"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void getRevenueTrend_ShouldReturnDailyTrend() throws Exception {
+        LocalDate today = LocalDate.now();
+        RevenueTrendData trendData = new RevenueTrendData(List.of(
+                new RevenueTrendData.DailyRevenueData(today.minusDays(1), 100.0),
+                new RevenueTrendData.DailyRevenueData(today, 200.0)
+        ));
+        RevenueControllerDto.RevenueTrendControllerDto trendDto = new RevenueControllerDto.RevenueTrendControllerDto(List.of(
+                new RevenueControllerDto.DailyRevenueControllerDto(today.minusDays(1), 100.0),
+                new RevenueControllerDto.DailyRevenueControllerDto(today, 200.0)
+        ));
+
+        when(revenueService.getRevenueTrend(1L, 7)).thenReturn(trendData);
+        when(revenueMapper.toControllerDto(any(RevenueTrendData.class))).thenReturn(trendDto);
+
+        mockMvc.perform(get("/u2m/v1/revenue/trend")
+                        .param("userId", "1")
+                        .param("days", "7"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.trend").isArray())
+                .andExpect(jsonPath("$.trend.length()").value(2))
+                .andExpect(jsonPath("$.trend[0].totalRevenue").value(100.0))
+                .andExpect(jsonPath("$.trend[1].totalRevenue").value(200.0));
+    }
+
+    @Test
+    void getRevenueTrend_WithDefaultDays_ShouldReturnTrend() throws Exception {
+        RevenueTrendData trendData = new RevenueTrendData(List.of());
+        RevenueControllerDto.RevenueTrendControllerDto trendDto = new RevenueControllerDto.RevenueTrendControllerDto(List.of());
+
+        when(revenueService.getRevenueTrend(1L, 30)).thenReturn(trendData);
+        when(revenueMapper.toControllerDto(any(RevenueTrendData.class))).thenReturn(trendDto);
+
+        mockMvc.perform(get("/u2m/v1/revenue/trend")
+                        .param("userId", "1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.trend").isArray());
+    }
+
+    @Test
+    void getRevenueTrend_WithoutUserId_ShouldReturnBadRequest() throws Exception {
+        mockMvc.perform(get("/u2m/v1/revenue/trend"))
                 .andExpect(status().isBadRequest());
     }
 }

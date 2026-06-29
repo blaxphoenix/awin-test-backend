@@ -4,11 +4,26 @@ Authorization: Basic {{username}} {{password}}
 X-Correlation-ID: {{correlationId}}
 
 ### Get total revenue for user 1 for the past 7 days
-GET http://{{host}}/u2m/v1/revenue?userId={{userId}}&days=7
+GET http://{{host}}/u2m/v1/revenue?userId={{userId}}&days=90
 Authorization: Basic {{username}} {{password}}
 X-Correlation-ID: {{correlationId}}
 
 ### Get total revenue for user 2 for the past 1 day
 GET http://{{host}}/u2m/v1/revenue?userId={{userId}}&days=1
+Authorization: Basic {{username}} {{password}}
+X-Correlation-ID: {{correlationId}}
+
+### Get revenue trend for user 5 for the past 30 days (default)
+GET http://{{host}}/u2m/v1/revenue/trend?userId={{userId}}
+Authorization: Basic {{username}} {{password}}
+X-Correlation-ID: {{correlationId}}
+
+### Get revenue trend for user 5 for the past 7 days
+GET http://{{host}}/u2m/v1/revenue/trend?userId={{userId}}&days=2
+Authorization: Basic {{username}} {{password}}
+X-Correlation-ID: {{correlationId}}
+
+### Get revenue trend for a configurable user for the past 90 days
+GET http://{{host}}/u2m/v1/revenue/trend?userId={{userId}}&days=90
 Authorization: Basic {{username}} {{password}}
 X-Correlation-ID: {{correlationId}}
